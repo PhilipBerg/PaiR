@@ -11,9 +11,7 @@
 #' @import utils
 #'
 #' @examples
-utils::globalVariables("where")
-utils::globalVariables("value")
-utils::globalVariables("ref")
+utils::globalVariables(c("where", "value", "ref", "all_of"))
 prnn <- function(data, id = 'id', load_info = FALSE, target = NULL){
   if(is.null(target)){
     pivot_cols <- rlang::expr(where(is.numeric))

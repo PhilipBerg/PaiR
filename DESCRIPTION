@@ -16,11 +16,14 @@ RoxygenNote: 7.1.1
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
+biocViews:
 Imports: 
     tidyr,
     dplyr,
     purrr,
     tibble,
-    tidyselect
+    tidyselect,
+    rlang,
+    limma
 URL: https://github.com/PhilipBerg/PaiR
 BugReports: https://github.com/PhilipBerg/PaiR/issues
