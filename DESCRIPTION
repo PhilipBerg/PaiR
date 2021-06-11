@@ -18,4 +18,7 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     tidyr,
-    dplyr
+    dplyr,
+    purrr,
+    tibble,
+    tidyselect

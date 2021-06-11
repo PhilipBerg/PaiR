@@ -2,12 +2,18 @@
 #'
 #' @param data data.frame
 #' @param id character
+#' @param load_info logical
 #'
 #' @return data.frame
 #' @export
+#' @importFrom dplyr %>%
+#' @importFrom dplyr .data
+#' @import utils
 #'
-#' @examples posthaste
+#' @examples
+utils::globalVariables("where")
 prnn <- function(data, id = 'id', load_info = FALSE){
+  value <- ref <- NULL
   data_filtered <- data %>%
     tidyr::drop_na()
   loading_sizes <- data_filtered %>%
@@ -28,7 +34,7 @@ prnn <- function(data, id = 'id', load_info = FALSE){
     ) %>%
     dplyr::select(-ref) %>%
     dplyr::group_by(sample) %>%
-    dplyr::summarise(rle_factor = median(value)) %>%
+    dplyr::summarise(rle_factor = stats::median(value)) %>%
     dplyr::left_join(loading_sizes, by = 'sample')
   for (i in seq_len(nrow(scaling_factors))) {
     data[scaling_factors$sample[i]] <- data[scaling_factors$sample[i]]/scaling_factors$rle_factor[i]
