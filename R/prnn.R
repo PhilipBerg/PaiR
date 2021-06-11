@@ -21,7 +21,7 @@ prnn <- function(data, id = 'id', load_info = FALSE, target = NULL){
   data_filtered <- data %>%
     tidyr::drop_na()
   loading_sizes <- data_filtered %>%
-    purrr::keep(is.numeric) %>%
+    dplyr::select(!!pivot_cols) %>%
     colSums() %>%
     tibble::enframe(name = 'sample', value = 'load_size')
   pseudo_reference <- data_filtered %>%

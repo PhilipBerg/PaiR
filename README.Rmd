@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# PaiR
+# pair
 
 <!-- badges: start -->
 <!-- badges: end -->
@@ -22,19 +22,18 @@ The goal of PaiR is to ...
 
 ## Installation
 
-You can install the released version of PaiR from [CRAN](https://CRAN.R-project.org) with:
-PaiR will be made avaialable on CRAN once it is completed.
+pair is still under development.
 
 ``` r
-install.packages("PaiR")
+install.packages("pair")
 ```
 
-And the development version from [GitHub](https://github.com/) with:
+pair is still under development.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("PhilipBerg/PaiR")
+devtools::install_github("PhilipBerg/pair")
 ```
 ## Example
 
-PaiR is currently under development, examples will be provided upon completion
+pair is still under development.
