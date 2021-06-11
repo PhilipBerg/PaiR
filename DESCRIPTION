@@ -22,3 +22,5 @@ Imports:
     purrr,
     tibble,
     tidyselect
+URL: https://github.com/PhilipBerg/PaiR
+BugReports: https://github.com/PhilipBerg/PaiR/issues
