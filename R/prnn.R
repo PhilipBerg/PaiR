@@ -12,8 +12,14 @@
 #'
 #' @examples
 utils::globalVariables("where")
-prnn <- function(data, id = 'id', load_info = FALSE){
-  value <- ref <- NULL
+utils::globalVariables("value")
+utils::globalVariables("ref")
+prnn <- function(data, id = 'id', load_info = FALSE, target = NULL){
+  if(is.null(target)){
+    pivot_cols <- rlang::expr(where(is.numeric))
+  }else{
+    pivot_cols <- rlang::expr(all_of(target))
+  }
   data_filtered <- data %>%
     tidyr::drop_na()
   loading_sizes <- data_filtered %>%
@@ -21,13 +27,13 @@ prnn <- function(data, id = 'id', load_info = FALSE){
     colSums() %>%
     tibble::enframe(name = 'sample', value = 'load_size')
   pseudo_reference <- data_filtered %>%
-    tidyr::pivot_longer(where(is.numeric)) %>%
+    tidyr::pivot_longer(!!pivot_cols) %>%
     dplyr::group_by(.data[[id]]) %>%
     dplyr::summarise(
       ref = prod(value^(1/dplyr::n()))
     )
   scaling_factors <- data_filtered %>%
-    tidyr::pivot_longer(where(is.numeric), names_to = 'sample') %>%
+    tidyr::pivot_longer(!!pivot_cols, names_to = 'sample') %>%
     dplyr::left_join(pseudo_reference, by = id) %>%
     dplyr::mutate(
       value = value/ref
