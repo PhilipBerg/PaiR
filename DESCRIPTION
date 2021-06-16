@@ -24,6 +24,11 @@ Imports:
     tibble,
     tidyselect,
     rlang,
-    limma
+    limma,
+    ggplot2,
+    magrittr,
+    cowplot,
+    stringr,
+    multidplyr
 URL: https://github.com/PhilipBerg/PaiR
 BugReports: https://github.com/PhilipBerg/PaiR/issues

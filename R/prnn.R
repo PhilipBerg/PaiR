@@ -12,42 +12,38 @@
 #'
 #' @examples
 utils::globalVariables(c("where", "value", "ref", "all_of"))
-prnn <- function(data, id = 'id', load_info = FALSE, target = NULL){
-  if(is.null(target)){
-    pivot_cols <- rlang::expr(where(is.numeric))
-  }else{
-    pivot_cols <- rlang::expr(all_of(target))
-  }
+prnn <- function(data, id_col = "id", log = TRUE, load_info = FALSE, target = NULL) {
+  target_cols <- check_target(target)
   data_filtered <- data %>%
     tidyr::drop_na()
-  loading_sizes <- data_filtered %>%
-    dplyr::select(!!pivot_cols) %>%
-    colSums() %>%
-    tibble::enframe(name = 'sample', value = 'load_size')
+  loading_sizes <- calc_loading_size(data_filtered, target_cols)
   pseudo_reference <- data_filtered %>%
-    tidyr::pivot_longer(!!pivot_cols) %>%
-    dplyr::group_by(.data[[id]]) %>%
+    tidyr::pivot_longer(!!target_cols) %>%
+    dplyr::group_by(.data[[id_col]]) %>%
     dplyr::summarise(
       ref = prod(value^(1/dplyr::n()))
     )
   scaling_factors <- data_filtered %>%
-    tidyr::pivot_longer(!!pivot_cols, names_to = 'sample') %>%
-    dplyr::left_join(pseudo_reference, by = id) %>%
+    tidyr::pivot_longer(!!target_cols, names_to = "sample") %>%
+    dplyr::left_join(pseudo_reference, by = id_col) %>%
     dplyr::mutate(
       value = value/ref
     ) %>%
     dplyr::select(-ref) %>%
     dplyr::group_by(sample) %>%
     dplyr::summarise(rle_factor = stats::median(value)) %>%
-    dplyr::left_join(loading_sizes, by = 'sample')
+    dplyr::left_join(loading_sizes, by = "sample")
   for (i in seq_len(nrow(scaling_factors))) {
-    data[scaling_factors$sample[i]] <- data[scaling_factors$sample[i]]/scaling_factors$rle_factor[i]
+    data[scaling_factors$sample[i]] <-
+      data[scaling_factors$sample[i]]/scaling_factors$rle_factor[i]
   }
-  data <- data %>%
-    dplyr::mutate(
-      dplyr::across(where(is.numeric), log2)
-    )
-  if(load_info){
+  if (log) {
+    data <- data %>%
+      dplyr::mutate(
+        dplyr::across(!!target_cols, log2)
+      )
+  }
+  if (load_info) {
     return(
       list(
         data = data,

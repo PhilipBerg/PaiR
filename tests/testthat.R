@@ -1,4 +1,4 @@
 library(testthat)
-library(PaiR)
+library(pair)
 
-test_check("PaiR")
+test_check("pair")
