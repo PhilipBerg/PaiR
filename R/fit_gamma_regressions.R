@@ -55,7 +55,7 @@ fit_gamma_imputation <- function(sd_mean, design, id_col = 'id'){
     dplyr::filter(sd>0) %>%
     dplyr::group_by(name) %>%
     dplyr::summarise(
-      model = list(stats::glm(sd~ mean, stats::Gamma(log))),
+      model = list(stats::glm(sd ~ mean, stats::Gamma(log))),
       .groups = "drop"
     ) %>%
     split.data.frame(.$name) %>%

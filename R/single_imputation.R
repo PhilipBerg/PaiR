@@ -17,6 +17,6 @@ single_imputation <- function(
   order <- data %>%
     colnames()
   data %>%
-    prep_data_for_imputation(conditions) %>%
-    impute(char_cols, order, gamma_reg)
+    prep_data_for_imputation(conditions, gamma_reg) %>%
+    impute(char_cols, order)
 }
