@@ -20,10 +20,10 @@ plot_MA <- function(hits) {
       significant = factor(significant, levels = c("Not significant", "Up", "Down"))
     ) %>%
     dplyr::arrange(significant) %>%
-    ggplot2::ggplot(ggplot2::aes(median_mean, median_lfc, color = significant))+
-    ggplot2::geom_point(size = 1/2)+
-    ggplot2::theme_bw()+
-    ggplot2::facet_wrap(comparison ~ .)+
-    ggplot2::xlab(expression(hat(mu)))+
+    ggplot2::ggplot(ggplot2::aes(median_mean, median_lfc, color = significant)) +
+    ggplot2::geom_point(size = 1/2) +
+    ggplot2::theme_bw() +
+    ggplot2::facet_wrap(comparison ~ .) +
+    ggplot2::xlab(expression(hat(mu))) +
     ggplot2::ylab('|LFC|')
 }

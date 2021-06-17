@@ -56,3 +56,7 @@ fit_gamma_regressions <- function(data, design, id_col = 'id'){
     )
   )
 }
+
+fit_gamma_imputation <- funtion(sd_mean){
+
+}

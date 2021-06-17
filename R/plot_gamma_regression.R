@@ -23,17 +23,17 @@ plot_gamma_regression <- function(data, design, id_col = 'id'){
       sd = stats::sd(value, na.rm = TRUE)
     ) %>%
     tidyr::drop_na() %>%
-    ggplot2::ggplot(ggplot2::aes(mean, sd))+
-    ggplot2::geom_point(size = 1/10)+
+    ggplot2::ggplot(ggplot2::aes(mean, sd)) +
+    ggplot2::geom_point(size = 1/10) +
     ggplot2::geom_smooth(
       method = stats::glm,
       formula = y ~ x,
       method.args = list(family = stats::Gamma(log)),
       fullrange = TRUE
-    )+
-    ggplot2::theme_classic()+
-    ggplot2::xlab(expression(hat(mu)))+
-    ggplot2::ylab(expression(hat(sigma)))+
+    ) +
+    ggplot2::theme_classic() +
+    ggplot2::xlab(expression(hat(mu))) +
+    ggplot2::ylab(expression(hat(sigma))) +
     ggplot2::ggtitle('For precision weights')
   imputation_plot <- data %>%
     tidyr::pivot_longer(tidyr::matches(cols_to_plot)) %>%
@@ -68,3 +68,4 @@ plot_gamma_regression <- function(data, design, id_col = 'id'){
     rel_heights = c(0.1, 1)
   )
 }
+
