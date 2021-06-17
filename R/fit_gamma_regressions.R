@@ -40,7 +40,7 @@ NULL
 #' colnames(design) <- paste0('ng', c(50, 100))
 #'
 #' # Fit all gamma regression models for the mean-variance trend
-#' gamma_model <- fit_gamma_regressions(yeast, design, 'identifier')\cr
+#' all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')\cr
 fit_gamma_regressions <- function(data, design, id_col = "id") {
   gamma_reg_imp <- data %>%
     fit_gamma_imputation(design, id_col)
@@ -65,7 +65,7 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
 #' @examples
 #' # Fit the gamma regression models for the mean-variance trend used in the
 #' # imputation procedure
-#' gamma_model <- fit_gamma_imputation(yeast, design, 'identifier')\cr
+#' gamma_imputation_models <- fit_gamma_imputation(yeast, design, 'identifier')\cr
 fit_gamma_imputation <- function(data, design, id_col = "id") {
   data %>%
     prep_data_for_gamma_imputation_regression(design, id_col) %>%
@@ -88,7 +88,7 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
 #' @examples
 #' # Fit the gamma regression model for the mean-variance trend used for
 #' # estimating the precision weights used in limma
-#' gamma_model <- fit_gamma_weights(yeast, design, 'identifier')
+#' gamma_weight_model <- fit_gamma_weights(yeast, design, 'identifier')
 #'
 #' # Note that, unless data has been log-transformed, it is likely that the
 #' # regression models will to not converge

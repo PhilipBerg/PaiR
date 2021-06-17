@@ -25,8 +25,8 @@ name of the features in data (e.g., peptides, proteins, etc.)}
 \code{fit_gamma_regressions} returns a list with the results from
 \code{fit_gamma_imputation} in \verb{$imputation} and the results from
 \code{fit_gamma_weights} in \verb{$weights}. \code{fit_gamma_imputation} returns a named
-list where the names corresponds to the conditions and contains a \code{glm}
-object with the gamma regression for the mean-variance trend.
+list where the names corresponds to the conditions. Each index contains
+a \code{glm} object with the gamma regression for the mean-variance trend.
 \code{fit_gamma_weights} returns a \code{glm} object
 
 
@@ -61,14 +61,14 @@ design <- model.matrix(~0+factor(rep(1:2, each = 3)))
 colnames(design) <- paste0('ng', c(50, 100))
 
 # Fit all gamma regression models for the mean-variance trend
-gamma_model <- fit_gamma_regressions(yeast, design, 'identifier')\cr
+all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')\cr
 # Fit the gamma regression models for the mean-variance trend used in the
 # imputation procedure
-gamma_model <- fit_gamma_imputation(yeast, design, 'identifier')\cr
+gamma_imputation_models <- fit_gamma_imputation(yeast, design, 'identifier')\cr
 # Fit the gamma regression model for the mean-variance trend used for
 # estimating the precision weights used in limma
-gamma_model <- fit_gamma_weights(yeast, design, 'identifier')
+gamma_weight_model <- fit_gamma_weights(yeast, design, 'identifier')
 
 # Note that, unless data has been log-transformed, it is likely that the
-# regression model will to not converge
+# regression models will to not converge
 }
