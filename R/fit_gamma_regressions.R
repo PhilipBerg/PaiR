@@ -1,7 +1,8 @@
 #' Function for Fitting the Mean-Variance Gamma Regression Models
 #'
-#'`fit_gamma_regressions` calls both \code{\link[pair]{fit_gamma_regression}}
-#'    and \code{\link[pair]{fit_gamma_weights}} and returns a list containing
+#'`fit_gamma_regressions` is a wrapper function that calls both
+#'    \code{\link[pair]{fit_gamma_regression}} and
+#'    \code{\link[pair]{fit_gamma_weights}}. and returns a list containing
 #'    the models for imputation in `$imputation` and the weights in `$weights`.
 #'
 #' @param data a `data.frame` to calculate the weights for

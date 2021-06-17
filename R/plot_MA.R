@@ -9,7 +9,7 @@
 #'
 #' @examples
 utils::globalVariables(c("significant", "median_lfc"))
-plot_MA <- function(hits) {
+plot_ma <- function(hits) {
   hits %>%
     dplyr::mutate(
       significant = dplyr::case_when(

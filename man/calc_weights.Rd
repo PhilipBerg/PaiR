@@ -38,11 +38,11 @@ design <- model.matrix(~0+factor(rep(1:2, each = 3)))
 colnames(design) <- paste0('ng', c(50, 100))
 
 # Fit the gamma regression model for the mean-variance trend
-gamma_model <- fit_gamma_weights(yeast, design, 'identifier')\
+gamma_model <- fit_gamma_weights(yeast, design, 'identifier')
 
 # Generate the weights for the yeast data
 calc_weights(yeast, gamma_model)\
 
 # Note that, unless data has been log-transformed, it is likely that the
- regression model will to not converge
+  regression model will to not converge
 }
