@@ -3,6 +3,7 @@
 export()
 export(calc_weights)
 export(run_limma_and_lfc)
+export(single_imputation)
 import(utils)
 importFrom(dplyr,"%>%")
 importFrom(dplyr,.data)

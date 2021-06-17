@@ -16,8 +16,7 @@ prnn <- function(data,
                  id_col = "id",
                  log = TRUE,
                  load_info = FALSE,
-                 target = NULL
-) {
+                 target = NULL) {
   target_cols <- check_target(target)
   data_filtered <- data %>%
     tidyr::drop_na()

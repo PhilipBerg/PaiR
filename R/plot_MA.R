@@ -18,7 +18,7 @@ plot_MA <- function(hits) {
         T ~ "Not significant"
       ),
       significant = factor(significant,
-                           levels = c("Not significant", "Up", "Down")
+        levels = c("Not significant", "Up", "Down")
       )
     ) %>%
     dplyr::arrange(significant) %>%

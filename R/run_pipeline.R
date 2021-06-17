@@ -87,18 +87,21 @@ run_pipeline <- function(data,
   results <- results %>%
     dplyr::mutate(
       # Run imputation
-      imputed_data = purrr::map(imputation,
-                                ~ impute(impute_nested, char_cols, col_order)
+      imputed_data = purrr::map(
+        imputation,
+        ~ impute(impute_nested, char_cols, col_order)
       ),
       # Run limma
-      limma_results = purrr::map(imputed_data,
-                                 run_limma_and_lfc,
-                                 design, contrast_matrix, gamma_reg_all, id_col
+      limma_results = purrr::map(
+        imputed_data,
+        run_limma_and_lfc,
+        design, contrast_matrix, gamma_reg_all, id_col
       ),
       # Bind non-missing data
-      limma_results = purrr::map(limma_results,
-                                 dplyr::bind_rows,
-                                 non_miss_result
+      limma_results = purrr::map(
+        limma_results,
+        dplyr::bind_rows,
+        non_miss_result
       )
     )
   if (workers != 1) {
@@ -107,43 +110,4 @@ run_pipeline <- function(data,
       dplyr::arrange(imputation)
   }
   return(results)
-}
-
-
-impute <- function(data, char_cols, order) {
-  data %>%
-    purrr::map(
-      dplyr::mutate,
-      data = purrr::pmap(list(mean, sd, data), impute_row)
-    ) %>%
-    purrr::map(dplyr::select, data) %>%
-    purrr::map(tidyr::unnest, data) %>%
-    dplyr::bind_cols(char_cols) %>%
-    dplyr::select(dplyr::all_of(order))
-}
-
-impute_nest <- function(data, condition, gamma_reg_model, LOQ) {
-  if (anyNA(data)) {
-    data <- data %>%
-      tibble::rownames_to_column(var = "tmp_id") %>%
-      dplyr::mutate(
-        mean = rowMeans(dplyr::across(where(is.numeric)), na.rm = T),
-        mean = tidyr::replace_na(mean, LOQ)
-      )
-    data[["sd"]] <- stats::predict(gamma_reg_model[[condition]], data, type = "response")
-    data %>%
-      tidyr::nest(data = -c(mean, sd, tmp_id))
-  } else {
-    return(data)
-  }
-}
-
-impute_row <- function(mean, sd, data) {
-  if (!anyNA(data)) {
-    return(data)
-  } else {
-    data <- as.data.frame(data)
-    data[is.na(data)] <- stats::rnorm(n = sum(is.na(data)), mean = mean, sd = sd)
-    return(data)
-  }
 }

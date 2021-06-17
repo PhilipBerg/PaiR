@@ -12,8 +12,7 @@ plot_norm_box <- function(data,
                           trim_M = .3,
                           trim_A = .05,
                           target = NULL,
-                          reference_sample = NULL
-) {
+                          reference_sample = NULL) {
   prnn <- data %>%
     prnn(id = id, load_info = F) %>%
     dplyr::rename_with(~ paste0(., "_prnn"), where(is.numeric))

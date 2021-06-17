@@ -31,8 +31,9 @@ run_limma_and_lfc <- function(data,
     purrr::map(rowMeans) %>%
     purrr::imap(~ tibble::enframe(.x, value = .y)) %>%
     purrr::reduce(dplyr::left_join, by = "name")
-  calc_lfc_for <- stringr::str_replace(dimnames(contrast_matrix)$Contrast,
-                                       "-", "_vs_"
+  calc_lfc_for <- stringr::str_replace(
+    dimnames(contrast_matrix)$Contrast,
+    "-", "_vs_"
   )
   lfc <- purrr::map(calc_lfc_for, calc_lfc, lfc) %>%
     purrr::map(dplyr::select, !!id_col := name, tidyr::contains("lfc")) %>%
@@ -60,6 +61,6 @@ calc_lfc <- function(comparison, means) {
   means %>%
     dplyr::mutate(
       !!paste0("lfc_", comparison) := !!dplyr::sym(columns[1]) -
-                                      !!dplyr::sym(columns[2])
+        !!dplyr::sym(columns[2])
     )
 }
