@@ -13,18 +13,13 @@
 #' @examples
 utils::globalVariables(c(".", "sd", "model"))
 plot_gamma_regression <- function(data, design, id_col = "id") {
-  sd_mean <- data %>%
-    pivot_data_for_gamma_regression(design)
-  precision_plot <- sd_mean %>%
-    dplyr::group_by(.data[[id_col]]) %>%
-    calc_mean_sd_trend() %>%
+  precision_plot <- data() %>%
+    prep_data_for_gamma_weight_regression() %>%
     tidyr::drop_na() %>%
     plot_mean_sd_trend() +
     ggplot2::ggtitle("For precision weights")
-  imputation_plot <- sd_mean %>%
-    dplyr::mutate(name = stringr::str_extract(name, cols_to_plot)) %>%
-    dplyr::group_by(name, .data[[id_col]]) %>%
-    calc_mean_sd_trend() %>%
+  imputation_plot <- data %>%
+    prep_data_for_gamma_imputation_regression(design, id_col)
     tidyr::drop_na() %>%
     plot_mean_sd_trend() +
     ggplot2::facet_wrap(name ~ .) +

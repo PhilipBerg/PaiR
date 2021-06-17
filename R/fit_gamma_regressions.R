@@ -17,9 +17,8 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
     fit_gamma_imputation(design, id_col)
   gamma_reg_all <- data %>%
     prep_data_for_gamma_weight_regression(design, id_col = id_col) %>%
-    fit_gamma_model() %>%
-    magrittr::use_series(model) %>%
-    magrittr::extract2(1)
+    fit_gamma_model()  %>%
+    extract_model()
   return(
     list(
       all = gamma_reg_all,
@@ -41,7 +40,8 @@ calc_mean_sd_trend <- function(data){
       mean = mean(value, na.rm = T),
       sd = stats::sd(value, na.rm = T),
       .groups = "drop"
-    )
+    ) %>%
+    dplyr::filter(sd > 0)
 }
 
 fit_gamma_model <- function(data){
@@ -54,8 +54,10 @@ fit_gamma_model <- function(data){
 
 prep_data_for_gamma_imputation_regression <- function(data,
                                                       design,
-                                                      id_col = "id",
-                                                      model) {
+                                                      id_col = "id"
+                                                      ) {
+  conditions <- design %>%
+    get_conditions()
   data %>%
     pivot_data_for_gamma_regression(design) %>%
     dplyr::mutate(
@@ -66,9 +68,7 @@ prep_data_for_gamma_imputation_regression <- function(data,
     ) %>%
     dplyr::group_by(name, .data[[id_col]]) %>%
     dplyr::filter(sum(!is.na(value)) >= 2) %>%
-    calc_mean_sd_trend() %>%
-    dplyr::filter(sd > 0) %>%
-    dplyr::group_by(name)
+    calc_mean_sd_trend()
 }
 
 
@@ -76,7 +76,7 @@ prep_data_for_gamma_imputation_regression <- function(data,
 pivot_data_for_gamma_regression <- function(data, design) {
   conditions <- design %>%
     get_conditions()
-  sd_mean <- data %>%
+  data %>%
     tidyr::pivot_longer(dplyr::matches(conditions))
 }
 
@@ -85,6 +85,11 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
     prep_data_for_gamma_imputation_regression(design, id_col) %>%
     fit_gamma_model() %>%
     split.data.frame(.$name) %>%
+    extract_model()
+}
+
+extract_model <- function(data) {
+  data %>%
     purrr::map(magrittr::use_series, model) %>%
     purrr::map(magrittr::extract2, 1)
 }
