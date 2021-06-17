@@ -1,25 +1,46 @@
-#' Function for Fitting the Mean-Variance Gamma Regression Models
+utils::globalVariables(c(".", "sd", "model"))
+#' Functions for Fitting the Mean-Variance Gamma Regression Models
 #'
-#'`fit_gamma_regressions` is a wrapper function that calls both
-#'    \code{\link[pair]{fit_gamma_regression}} and
-#'    \code{\link[pair]{fit_gamma_weights}}. and returns a list containing
-#'    the models for imputation in `$imputation` and the weights in `$weights`.
 #'
-#' @param data a `data.frame` to calculate the weights for
-#' @param design a design or model matrix
+#' @param data a `data.frame` generate the mean-variance trends for
+#' @param design a design or model matrix as produced my `model.matrix`
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
 #'
-#' @return a list with the gamma regressions for imputation in
-#'         `$imputation$<condition>` and the gamma regression for generating
-#'         precision weights in `$weights`.
+#' @return `fit_gamma_regressions` returns a list with the results from
+#'     `fit_gamma_imputation` in `$imputation` and the results from
+#'     `fit_gamma_weights` in `$weights`. `fit_gamma_imputation` returns a named
+#'     list where the names corresponds to the conditions. Each index contains
+#'     a `glm` object with the gamma regression for the mean-variance trend.
+#'     `fit_gamma_weights` returns a `glm` object
+#' @name Mean-Variance_Gamma_Regressions
+NULL
+#' `fit_gamma_regressions` is a wrapper function that calls both
+#'    \code{fit_gamma_imputation} and
+#'    \code{fit_gamma_weights}. It returns a list containing
+#'    the models for imputation in `$imputation` and the weights in `$weights`.
+#'    `fit_gamma_imputation` returns a list named according to the different
+#'    conditions and `fit_gamma_weights` returns a `glm` object containing the
+#'    gamma regression.
+#'
+#' A more detailed description is yet to come
+#'
+#' @describeIn Mean-Variance_Gamma_Regressions Wrapper function that runs both
+#'     `fit_gamma_imputation` and `fit_gamma_weights`
 #' @export
 #'
 #' @importFrom dplyr %>%
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(c(".", "sd", "model"))
+#' # Generate a design matrix for the data
+#' design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+#'
+#' # Set correct colnames, this is important for fit_gamma_*
+#' colnames(design) <- paste0('ng', c(50, 100))
+#'
+#' # Fit all gamma regression models for the mean-variance trend
+#' gamma_model <- fit_gamma_regressions(yeast, design, 'identifier')\cr
 fit_gamma_regressions <- function(data, design, id_col = "id") {
   gamma_reg_imp <- data %>%
     fit_gamma_imputation(design, id_col)
@@ -33,16 +54,18 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
   )
 }
 
-#' Title
-#'
-#' @param data
-#' @param design
-#' @param id_col
-#'
+#' @inheritParams Mean-Variance_Gamma_Regressions
+#' @describeIn Mean-Variance_Gamma_Regressions Function that generates per
+#'     condition mean-variance trends used in the imputation procedure.
+#'     Each id in the `id_col` gets one mean and variance calculated for each
+#'     condition. One model is then fitted per condition.
 #' @return
 #' @export
 #'
 #' @examples
+#' # Fit the gamma regression models for the mean-variance trend used in the
+#' # imputation procedure
+#' gamma_model <- fit_gamma_imputation(yeast, design, 'identifier')\cr
 fit_gamma_imputation <- function(data, design, id_col = "id") {
   data %>%
     prep_data_for_gamma_imputation_regression(design, id_col) %>%
@@ -52,16 +75,23 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
     extract_model()
 }
 
-#' Title
+#' @describeIn Mean-Variance_Gamma_Regressions Function to produce the
+#'     mean-variance trend used to calculate the precision weights used in
+#'     \code{\link[limma]{limma}}. Each id in the `id_col` gets one mean and one
+#'     variance across all conditions and one model is then fitted for all
+#'     mean-variance pairs.
 #'
-#' @param data
-#' @param design
-#' @param id_col
-#'
+#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @return
 #' @export
 #'
 #' @examples
+#' # Fit the gamma regression model for the mean-variance trend used for
+#' # estimating the precision weights used in limma
+#' gamma_model <- fit_gamma_weights(yeast, design, 'identifier')
+#'
+#' # Note that, unless data has been log-transformed, it is likely that the
+#' # regression models will to not converge
 fit_gamma_weights <- function(data, design, id_col = "id"){
   data %>%
     prep_data_for_gamma_weight_regression(design, id_col) %>%

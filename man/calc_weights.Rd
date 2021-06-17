@@ -44,5 +44,5 @@ gamma_model <- fit_gamma_weights(yeast, design, 'identifier')
 calc_weights(yeast, gamma_model)\
 
 # Note that, unless data has been log-transformed, it is likely that the
-  regression model will to not converge
+# regression model will to not converge
 }
