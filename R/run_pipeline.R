@@ -76,6 +76,7 @@ run_pipeline <- function(data,
         "id_col"
       )
     )
+    on.exit(rm(cluster))
   }
   results <- tibble::tibble(
     imputation = seq_len(imputations)

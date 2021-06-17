@@ -1,5 +1,5 @@
 Package: pair
-Title: What the Package Does (One Line, Title Case)
+Title: Imputation and Significance Analysis of Proteomics Data
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Philip",
@@ -7,7 +7,12 @@ Authors@R:
            role = c("aut", "cre"),
            email = "pb1015@msstate.edu",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: Analysis of lable free proteomics data.
+Description: Analysis of lable free proteomics data in R.
+    Includes data normalization, gamma regression to establish mean-variance 
+    trends that is to remove mean-variance trends in the data as well as 
+    adaptive inference of standard deviation for imputation.
+    It uses limma for significance test, and generates multiple 
+    imputations to reduce type-I error from the imputation.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -18,17 +23,19 @@ Suggests:
 Config/testthat/edition: 3
 biocViews:
 Imports: 
-    tidyr,
-    dplyr,
-    purrr,
-    tibble,
-    tidyselect,
-    rlang,
-    limma,
-    ggplot2,
-    magrittr,
     cowplot,
+    dplyr,
+    ggplot2,
+    limma,
+    magrittr,
+    multidplyr,
+    purrr,
+    rlang,
     stringr,
-    multidplyr
-URL: https://github.com/PhilipBerg/PaiR
-BugReports: https://github.com/PhilipBerg/PaiR/issues
+    tibble,
+    tidyr,
+    tidyselect
+URL: https://github.com/PhilipBerg/pair
+BugReports: https://github.com/PhilipBerg/pair/issues
+Depends: 
+    R (>= 2.10)

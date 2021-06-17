@@ -2,6 +2,8 @@
 
 export()
 export(calc_weights)
+export(fit_gamma_imputation)
+export(fit_gamma_weights)
 export(run_limma_and_lfc)
 export(single_imputation)
 import(utils)

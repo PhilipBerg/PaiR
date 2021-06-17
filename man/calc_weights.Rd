@@ -2,16 +2,49 @@
 % Please edit documentation in R/calc_weights.R
 \name{calc_weights}
 \alias{calc_weights}
-\title{Title}
+\title{Calculate Precision Weights From Gamma Regression}
 \usage{
 calc_weights(data, gamma_reg_model)
 }
 \arguments{
-\item{gamma_reg_model}{}
+\item{data}{A \code{data.frame} who's quantitative columns should be converted to
+precision weights.}
+
+\item{gamma_reg_model}{a \code{glm} object as produced by
+\code{\link[pair]{fit_gamma_regression}} or \code{\link[pair]{fit_gamma_weights}}.
+Any \code{glm} object with \code{formula} \code{sd ~ mean} is valid.}
 }
 \value{
-
+The same \code{data.frame} but with all quantitative values replaced by
+their precision weights
 }
 \description{
-Title
+\code{calc_weights} returns a data frame with all quantitative values
+replaced by their corresponding precision weights estimated from the gamma
+regression.
+}
+\details{
+\code{calc_weights} takes as input a data frame and a \code{glm} object produced
+by \code{\link[pair]{fit_gamma_regression}} or \code{\link[pair]{fit_gamma_weights}}.
+For all numeric columns, it predicts the standard deviation using the gamma
+regression. It then squares and takes the reciprocal of each value to generate the
+precision weights.
+}
+\examples{
+# Generate a design matrix for the data
+design <- model.matrix(~0+factor(rep(1:2, each = 3)))\cr
+
+# Set correct colnames, this is important for \code{\link[pair]{fit_gamma_weights}}
+colnames(design) <- paste0('ng', c(50, 100))\linebreak
+
+# Fit the gamma regression model for the mean-variance trend
+gamma_model <- fit_gamma_weights(yeast, design, 'identifier')\
+
+
+# Generate the weights for the yeast data
+calc_weights(yeast, gamma_model)\
+
+
+# Note that, unless data has been log-transformed, it is likely that the
+ regression model will to not converge
 }

@@ -20,7 +20,7 @@ plot_gamma_regression <- function(data, design, id_col = "id") {
     ggplot2::ggtitle("For precision weights")
   imputation_plot <- data %>%
     prep_data_for_gamma_imputation_regression(design, id_col)
-    tidyr::drop_na() %>%
+  tidyr::drop_na() %>%
     plot_mean_sd_trend() +
     ggplot2::facet_wrap(name ~ .) +
     ggplot2::ggtitle("For imputation")
@@ -35,7 +35,7 @@ plot_gamma_regression <- function(data, design, id_col = "id") {
   )
 }
 
-plot_mean_sd_trend <- function(data){
+plot_mean_sd_trend <- function(data) {
   ggplot2::ggplot(ggplot2::aes(mean, sd)) +
     ggplot2::geom_point(size = 1 / 10) +
     ggplot2::geom_smooth(
