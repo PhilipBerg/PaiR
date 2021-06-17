@@ -14,20 +14,24 @@ fit_gamma_imputation(data, design, id_col = "id")
 fit_gamma_weights(data, design, id_col = "id")
 }
 \arguments{
-\item{data}{a \code{data.frame} generate the mean-variance trends for}
+\item{data}{a \code{data.frame} to generate the mean-variance trends for. It
+should contain columns with conditions named as the column names in
+\code{design} (presumably with some suffix).}
 
-\item{design}{a design or model matrix as produced my \code{model.matrix}}
+\item{design}{a design or model matrix as produced my \code{model.matrix} with
+column names corresponding to the different conditions.}
 
 \item{id_col}{a character for the name of the column containing the
 name of the features in data (e.g., peptides, proteins, etc.)}
 }
 \value{
-\code{fit_gamma_regressions} returns a list with the results from
-\code{fit_gamma_imputation} in \verb{$imputation} and the results from
-\code{fit_gamma_weights} in \verb{$weights}. \code{fit_gamma_imputation} returns a named
+\code{fit_gamma_imputation} returns a named
 list where the names corresponds to the conditions. Each index contains
 a \code{glm} object with the gamma regression for the mean-variance trend.
-\code{fit_gamma_weights} returns a \code{glm} object
+\code{fit_gamma_weights} returns a \code{glm} object with the gamma regression
+for the precision weights. \code{fit_gamma_regressions} returns a list with the results from
+\code{fit_gamma_imputation} in \verb{$imputation} and the results from
+\code{fit_gamma_weights} in \verb{$weights}.
 
 
 
@@ -61,10 +65,12 @@ design <- model.matrix(~0+factor(rep(1:2, each = 3)))
 colnames(design) <- paste0('ng', c(50, 100))
 
 # Fit all gamma regression models for the mean-variance trend
-all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')\cr
+all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')
+
 # Fit the gamma regression models for the mean-variance trend used in the
 # imputation procedure
-gamma_imputation_models <- fit_gamma_imputation(yeast, design, 'identifier')\cr
+gamma_imputation_models <- fit_gamma_imputation(yeast, design, 'identifier')
+
 # Fit the gamma regression model for the mean-variance trend used for
 # estimating the precision weights used in limma
 gamma_weight_model <- fit_gamma_weights(yeast, design, 'identifier')

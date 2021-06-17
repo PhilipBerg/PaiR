@@ -11,7 +11,7 @@ calc_weights(data, gamma_reg_model)
 precision weights.}
 
 \item{gamma_reg_model}{a \code{glm} object as produced by
-\code{\link[pair]{fit_gamma_regression}} or \code{\link[pair]{fit_gamma_weights}}.
+\code{\link[pair]{fit_gamma_regressions}} or \code{\link[pair]{fit_gamma_weights}}.
 Any \code{glm} object with \code{formula} \code{sd ~ mean} is valid.}
 }
 \value{
@@ -41,7 +41,7 @@ colnames(design) <- paste0('ng', c(50, 100))
 gamma_model <- fit_gamma_weights(yeast, design, 'identifier')
 
 # Generate the weights for the yeast data
-calc_weights(yeast, gamma_model)\
+calc_weights(yeast, gamma_model)
 
 # Note that, unless data has been log-transformed, it is likely that the
 # regression model will to not converge

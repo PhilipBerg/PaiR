@@ -2,17 +2,21 @@ utils::globalVariables(c(".", "sd", "model"))
 #' Functions for Fitting the Mean-Variance Gamma Regression Models
 #'
 #'
-#' @param data a `data.frame` generate the mean-variance trends for
-#' @param design a design or model matrix as produced my `model.matrix`
+#' @param data a `data.frame` to generate the mean-variance trends for. It
+#'     should contain columns with conditions named as the column names in
+#'     `design` (presumably with some suffix).
+#' @param design a design or model matrix as produced my `model.matrix` with
+#'     column names corresponding to the different conditions.
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
 #'
-#' @return `fit_gamma_regressions` returns a list with the results from
-#'     `fit_gamma_imputation` in `$imputation` and the results from
-#'     `fit_gamma_weights` in `$weights`. `fit_gamma_imputation` returns a named
+#' @return `fit_gamma_imputation` returns a named
 #'     list where the names corresponds to the conditions. Each index contains
 #'     a `glm` object with the gamma regression for the mean-variance trend.
-#'     `fit_gamma_weights` returns a `glm` object
+#'     `fit_gamma_weights` returns a `glm` object with the gamma regression
+#'     for the precision weights. `fit_gamma_regressions` returns a list with the results from
+#'     `fit_gamma_imputation` in `$imputation` and the results from
+#'     `fit_gamma_weights` in `$weights`.
 #' @name Mean-Variance_Gamma_Regressions
 NULL
 #' `fit_gamma_regressions` is a wrapper function that calls both
@@ -40,7 +44,8 @@ NULL
 #' colnames(design) <- paste0('ng', c(50, 100))
 #'
 #' # Fit all gamma regression models for the mean-variance trend
-#' all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')\cr
+#' all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')
+#'
 fit_gamma_regressions <- function(data, design, id_col = "id") {
   gamma_reg_imp <- data %>%
     fit_gamma_imputation(design, id_col)
@@ -65,7 +70,8 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
 #' @examples
 #' # Fit the gamma regression models for the mean-variance trend used in the
 #' # imputation procedure
-#' gamma_imputation_models <- fit_gamma_imputation(yeast, design, 'identifier')\cr
+#' gamma_imputation_models <- fit_gamma_imputation(yeast, design, 'identifier')
+#'
 fit_gamma_imputation <- function(data, design, id_col = "id") {
   data %>%
     prep_data_for_gamma_imputation_regression(design, id_col) %>%
