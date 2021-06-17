@@ -30,21 +30,15 @@ run_pipeline <- function(data,
     plot_gamma_regression(data, design, id_col = id_col)
   }
   #Generate imputation input
-  LOQ <- data %>%
-    purrr::keep(is.numeric) %>%
-    unlist(T, F) %>%
-    {stats::quantile(., .25, na.rm = T) - 1.5*stats::IQR(., na.rm = T)} %>%
-    unname()
   col_order <- names(data)
   missing_data <- data %>%
     dplyr::filter(dplyr::if_any(where(is.numeric), is.na))
   char_cols <- missing_data %>%
     purrr::keep(is.character)
-  data_numeric <- missing_data %>%
-    purrr::keep(is.numeric) %>%
-    split.default(stringr::str_remove(names(.), "_\\d+$"))
-  impute_nested <- data_numeric %>%
-    purrr::imap(impute_nest, gamma_reg_models$individual, LOQ)
+  conditions <- design %>%
+    get_conditions()
+  impute_nested <- missing_data %>%
+    prep_data_for_imputation(conditions, gamma_reg_models$individual)
   # Generate results
   ## Non-missing data
   non_miss_result <- data %>%
@@ -105,7 +99,7 @@ run_pipeline <- function(data,
 }
 
 
-impute <- function(data, id_col, order){
+impute <- function(data, char_cols, order){
   data %>%
     purrr::map(
       dplyr::mutate,
@@ -113,7 +107,7 @@ impute <- function(data, id_col, order){
     ) %>%
     purrr::map(dplyr::select, data) %>%
     purrr::map(tidyr::unnest, data) %>%
-    dplyr::bind_cols(id_col) %>%
+    dplyr::bind_cols(char_cols) %>%
     dplyr::select(dplyr::all_of(order))
 }
 
