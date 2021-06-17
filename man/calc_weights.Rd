@@ -32,18 +32,16 @@ precision weights.
 }
 \examples{
 # Generate a design matrix for the data
-design <- model.matrix(~0+factor(rep(1:2, each = 3)))\cr
+design <- model.matrix(~0+factor(rep(1:2, each = 3)))
 
-# Set correct colnames, this is important for \code{\link[pair]{fit_gamma_weights}}
-colnames(design) <- paste0('ng', c(50, 100))\linebreak
+# Set correct colnames, this is important for fit_gamma_weights
+colnames(design) <- paste0('ng', c(50, 100))
 
 # Fit the gamma regression model for the mean-variance trend
 gamma_model <- fit_gamma_weights(yeast, design, 'identifier')\
 
-
 # Generate the weights for the yeast data
 calc_weights(yeast, gamma_model)\
-
 
 # Note that, unless data has been log-transformed, it is likely that the
  regression model will to not converge
