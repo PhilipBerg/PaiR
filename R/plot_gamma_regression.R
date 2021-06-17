@@ -13,8 +13,8 @@
 #' @examples
 utils::globalVariables(c(".", "sd", "model"))
 plot_gamma_regression <- function(data, design, id_col = 'id'){
-  cols_to_plot <- colnames(design) %>%
-    stringr::str_flatten('|')
+  cols_to_plot <- design %>%
+    get_conditions()
   precision_plot <- data %>%
     tidyr::pivot_longer(tidyr::matches(cols_to_plot)) %>%
     dplyr::group_by(.data[[id_col]]) %>%
@@ -68,4 +68,3 @@ plot_gamma_regression <- function(data, design, id_col = 'id'){
     rel_heights = c(0.1, 1)
   )
 }
-
