@@ -15,16 +15,14 @@
 #'
 #' @examples
 utils::globalVariables(c("load_size", "lfc", "A", "w"))
-tmm <- function(
-  data,
-  id = "id",
-  trim_M = .3,
-  trim_A = .05,
-  log = TRUE,
-  load_info = FALSE,
-  target = NULL,
-  reference_sample = NULL
-) {
+tmm <- function(data,
+                id = "id",
+                trim_M = .3,
+                trim_A = .05,
+                log = TRUE,
+                load_info = FALSE,
+                target = NULL,
+                reference_sample = NULL) {
   data_filtered <- data %>%
     tidyr::drop_na()
   if (is.null(reference_sample) & is.null(target)) {
@@ -32,15 +30,15 @@ tmm <- function(
     reference_sample <- calc_cv(data_filtered, target_cols)
     reference_sample <-
       names(reference_sample)[reference_sample == min(reference_sample)]
-  }else if(is.null(reference_sample)){
+  } else if (is.null(reference_sample)) {
     target_cols <- rlang::expr(where(is.numeric))
     reference_sample <- calc_cv(data_filtered, target_cols)
     reference_sample <-
       names(reference_sample)[reference_sample == min(reference_sample)]
     target_cols <- c(target, reference_sample)
-  }else if (is.null(target)){
+  } else if (is.null(target)) {
     target_cols <- rlang::expr(where(is.numeric))
-  }else{
+  } else {
     target_cols <- c(target, reference_sample)
   }
   loading_sizes <- calc_loading_size(data_filtered, target_cols)
@@ -54,18 +52,17 @@ tmm <- function(
     dplyr::mutate(
       w = (load_size - value) / (load_size * value) +
         (reference_loading_size - !!reference_sample) /
-        (reference_loading_size * !!reference_sample),
+          (reference_loading_size * !!reference_sample),
       lfc = log2((value / load_size) /
-                   (!!reference_sample / reference_loading_size)),
-      A = .5*log2((value / load_size) *
-                    (!!reference_sample / reference_loading_size))
+        (!!reference_sample / reference_loading_size)),
+      A = .5 * log2((value / load_size) *
+        (!!reference_sample / reference_loading_size))
     ) %>%
     dplyr::group_by(sample) %>%
     dplyr::filter(
       dplyr::between(
         lfc, stats::quantile(lfc, trim_M), stats::quantile(lfc, 1 - trim_M)
-      )
-      &
+      ) &
         dplyr::between(
           A, stats::quantile(A, trim_A), stats::quantile(A, 1 - trim_A)
         )
@@ -96,7 +93,7 @@ tmm <- function(
         scaling_factors = scaling_factors
       )
     )
-  }else {
+  } else {
     return(data)
   }
 }
@@ -105,7 +102,7 @@ calc_cv <- function(data, targets) {
   data %>%
     dplyr::select(!!targets) %>%
     purrr::map_dbl(
-      ~sd(.x)/mean(.x)
+      ~ sd(.x) / mean(.x)
     )
 }
 
@@ -113,5 +110,5 @@ calc_loading_size <- function(data, targets) {
   data %>%
     dplyr::select(!!targets) %>%
     colSums() %>%
-    tibble::enframe(name = 'sample', value = 'load_size')
+    tibble::enframe(name = "sample", value = "load_size")
 }

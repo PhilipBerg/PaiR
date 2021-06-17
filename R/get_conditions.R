@@ -1,5 +1,5 @@
 get_conditions <- function(design) {
   design %>%
     colnames() %>%
-    stringr::str_flatten('|')
+    stringr::str_flatten("|")
 }

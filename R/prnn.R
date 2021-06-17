@@ -12,7 +12,12 @@
 #'
 #' @examples
 utils::globalVariables(c("where", "value", "ref", "all_of"))
-prnn <- function(data, id_col = "id", log = TRUE, load_info = FALSE, target = NULL) {
+prnn <- function(data,
+                 id_col = "id",
+                 log = TRUE,
+                 load_info = FALSE,
+                 target = NULL
+) {
   target_cols <- check_target(target)
   data_filtered <- data %>%
     tidyr::drop_na()
@@ -21,13 +26,13 @@ prnn <- function(data, id_col = "id", log = TRUE, load_info = FALSE, target = NU
     tidyr::pivot_longer(!!target_cols) %>%
     dplyr::group_by(.data[[id_col]]) %>%
     dplyr::summarise(
-      ref = prod(value^(1/dplyr::n()))
+      ref = prod(value^(1 / dplyr::n()))
     )
   scaling_factors <- data_filtered %>%
     tidyr::pivot_longer(!!target_cols, names_to = "sample") %>%
     dplyr::left_join(pseudo_reference, by = id_col) %>%
     dplyr::mutate(
-      value = value/ref
+      value = value / ref
     ) %>%
     dplyr::select(-ref) %>%
     dplyr::group_by(sample) %>%
@@ -35,7 +40,7 @@ prnn <- function(data, id_col = "id", log = TRUE, load_info = FALSE, target = NU
     dplyr::left_join(loading_sizes, by = "sample")
   for (i in seq_len(nrow(scaling_factors))) {
     data[scaling_factors$sample[i]] <-
-      data[scaling_factors$sample[i]]/scaling_factors$rle_factor[i]
+      data[scaling_factors$sample[i]] / scaling_factors$rle_factor[i]
   }
   if (log) {
     data <- data %>%
@@ -50,7 +55,7 @@ prnn <- function(data, id_col = "id", log = TRUE, load_info = FALSE, target = NU
         scaling_factors = scaling_factors
       )
     )
-  }else{
+  } else {
     return(data)
   }
 }

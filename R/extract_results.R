@@ -13,23 +13,29 @@
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(c("p_val", "median_mean.x", "median_mean.y", "comparison", "median_mean"))
-extract_results <- function(
-  data,
-  results,
-  alpha = .05,
-  abs_lfc = 1,
-  pcor = stats::p.adjust.methods,
-  id_col = 'id'
-) {
+utils::globalVariables(
+  c(
+    "p_val",
+    "median_mean.x",
+    "median_mean.y",
+    "comparison",
+    "median_mean"
+  )
+)
+extract_results <- function(data,
+                            results,
+                            alpha = .05,
+                            abs_lfc = 1,
+                            pcor = stats::p.adjust.methods,
+                            id_col = "id") {
   pcor <- match.arg(pcor)
-  #Get the number of imputations ran
+  # Get the number of imputations ran
   imputations <- nrow(results)
-  #Count number of success
+  # Count number of success
   pvals_multi_imp <- results %>%
     dplyr::select(imputation, limma_results) %>%
     tidyr::unnest(cols = limma_results)
-  if(pcor != "none"){
+  if (pcor != "none") {
     pvals_multi_imp <- pvals_multi_imp %>%
       dplyr::group_by(imputation) %>%
       dplyr::mutate(
@@ -40,11 +46,13 @@ extract_results <- function(
   pvals_multi_imp <- pvals_multi_imp %>%
     dplyr::select(-imputation) %>%
     dplyr::mutate(
-      dplyr::across(dplyr::contains("p_val"),
-                    ~. < alpha
+      dplyr::across(
+        dplyr::contains("p_val"),
+        ~ . < alpha
       ),
-      dplyr::across(dplyr::contains("lfc_"),
-                    ~abs(.) > abs_lfc
+      dplyr::across(
+        dplyr::contains("lfc_"),
+        ~ abs(.) > abs_lfc
       )
     ) %>%
     tidyr::pivot_longer(
@@ -58,7 +66,8 @@ extract_results <- function(
         x = sum(p_val & lfc),
         n = imputations,
         p = 0.5,
-        "greater")$p.value,
+        "greater"
+      )$p.value,
       .groups = "drop"
     )
   imputation_summary <- results %>%
@@ -66,8 +75,8 @@ extract_results <- function(
   comps <- imputation_summary$comparison %>%
     unique()
   all_cols <- comps %>%
-    stringr::str_replace('_vs_', '|') %>%
-    stringr::str_flatten('|')
+    stringr::str_replace("_vs_", "|") %>%
+    stringr::str_flatten("|")
   non_miss_summary <- data %>%
     tidyr::drop_na(dplyr::matches(all_cols)) %>%
     calc_comp_means(comps, id_col) %>%
@@ -80,22 +89,20 @@ extract_results <- function(
     dplyr::mutate(
       median_mean = dplyr::coalesce(median_mean.x, median_mean.y)
     ) %>%
-    dplyr::select(-tidyr::matches('\\.(x|y)$'))
+    dplyr::select(-tidyr::matches("\\.(x|y)$"))
   pvals_multi_imp %>%
     dplyr::left_join(
       complete_summary,
       by = c(id_col, "comparison")
     ) %>%
     dplyr::mutate(
-      comparison = stringr::str_replace_all(comparison, '_', ' ')
+      comparison = stringr::str_replace_all(comparison, "_", " ")
     )
 }
 
-summarise_imputations <- function(
-  results,
-  pcor = stats::p.adjust.methods,
-  id_col = 'id'
-) {
+summarise_imputations <- function(results,
+                                  pcor = stats::p.adjust.methods,
+                                  id_col = "id") {
   lfc <- results %>%
     dplyr::select(limma_results) %>%
     tidyr::unnest(limma_results) %>%
@@ -104,7 +111,7 @@ summarise_imputations <- function(
     dplyr::summarise(dplyr::across(where(is.numeric), stats::median)) %>%
     tidyr::pivot_longer(where(is.numeric)) %>%
     dplyr::mutate(
-      name = stringr::str_remove(name, 'lfc_')
+      name = stringr::str_remove(name, "lfc_")
     ) %>%
     dplyr::rename(median_lfc = value, comparison = name)
 
@@ -123,7 +130,7 @@ summarise_imputations <- function(
     dplyr::select(imputation, limma_results) %>%
     tidyr::unnest(limma_results) %>%
     dplyr::select(imputation, {{ id_col }}, dplyr::contains("p_val"))
-  if(pcor != "none"){
+  if (pcor != "none") {
     p_val <- p_val %>%
       dplyr::group_by(imputation) %>%
       dplyr::mutate(
@@ -137,26 +144,28 @@ summarise_imputations <- function(
     dplyr::summarise(dplyr::across(where(is.numeric), stats::median)) %>%
     tidyr::pivot_longer(where(is.numeric)) %>%
     dplyr::mutate(
-      name = stringr::str_remove(name, 'p_val_')
+      name = stringr::str_remove(name, "p_val_")
     ) %>%
     dplyr::rename(median_p_value = value, comparison = name)
 
   p_val %>%
     dplyr::left_join(
-      mean_values, by = c(id_col, 'comparison')
+      mean_values,
+      by = c(id_col, "comparison")
     ) %>%
     dplyr::left_join(
-      lfc, by = c(id_col, 'comparison')
+      lfc,
+      by = c(id_col, "comparison")
     ) %>%
     dplyr::mutate(
       imputed = !is.na(median_mean)
     )
 }
 
-calc_comp_means <- function(data, comps, id_col = 'id') {
+calc_comp_means <- function(data, comps, id_col = "id") {
   mean_values <- data
   comp_cols <- comps %>%
-    stringr::str_replace('_vs_', '|')
+    stringr::str_replace("_vs_", "|")
   for (i in seq_along(comps)) {
     mean_values <- mean_values %>%
       dplyr::mutate(

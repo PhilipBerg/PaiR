@@ -12,13 +12,15 @@
 #'
 #' @examples
 utils::globalVariables(c(".", "sd", "model"))
-fit_gamma_regressions <- function(data, design, id_col = 'id'){
+fit_gamma_regressions <- function(data, design, id_col = "id") {
   conditions <- design %>%
     get_conditions()
   sd_mean <- data %>%
     tidyr::pivot_longer(dplyr::matches(conditions)) %>%
     dplyr::mutate(
-      name = stringr::str_replace(name, paste0("(", conditions, ")", ".*"), "\\1")
+      name = stringr::str_replace(name,
+                                  paste0("(", conditions, ")", ".*"), "\\1"
+      )
     )
   gamma_reg <- sd_mean %>%
     fit_gamma_imputation(design, id_col)
@@ -43,7 +45,7 @@ fit_gamma_regressions <- function(data, design, id_col = 'id'){
 }
 
 
-fit_gamma_imputation <- function(sd_mean, design, id_col = 'id'){
+fit_gamma_imputation <- function(sd_mean, design, id_col = "id") {
   sd_mean %>%
     dplyr::group_by(name, .data[[id_col]]) %>%
     dplyr::filter(sum(!is.na(value)) >= 2) %>%
@@ -52,7 +54,7 @@ fit_gamma_imputation <- function(sd_mean, design, id_col = 'id'){
       sd = stats::sd(value, na.rm = T),
       .groups = "drop"
     ) %>%
-    dplyr::filter(sd>0) %>%
+    dplyr::filter(sd > 0) %>%
     dplyr::group_by(name) %>%
     dplyr::summarise(
       model = list(stats::glm(sd ~ mean, stats::Gamma(log))),

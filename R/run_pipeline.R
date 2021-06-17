@@ -11,25 +11,26 @@
 #' @return
 #' @export
 #'
-#'@import utils
+#' @import utils
 #'
 #' @examples
-utils::globalVariables(c("tmp_id", "imputation", "imputed_data", "limma_results"))
+utils::globalVariables(
+  c("tmp_id", "imputation", "imputed_data", "limma_results")
+)
 run_pipeline <- function(data,
                          design,
                          contrast_matrix,
                          imputations,
                          workers,
                          id_col = "id",
-                         plot_trend = F
-) {
-  #Fit gamma models
+                         plot_trend = F) {
+  # Fit gamma models
   gamma_reg_models <- fit_gamma_regressions(data, design, id_col = id_col)
   gamma_reg_all <- gamma_reg_models$all
   if (plot_trend) {
     plot_gamma_regression(data, design, id_col = id_col)
   }
-  #Generate imputation input
+  # Generate imputation input
   col_order <- names(data)
   missing_data <- data %>%
     dplyr::filter(dplyr::if_any(where(is.numeric), is.na))
@@ -46,32 +47,34 @@ run_pipeline <- function(data,
     run_limma_and_lfc(design, contrast_matrix, gamma_reg_all, id_col)
   if (workers != 1) {
     cluster <- multidplyr::new_cluster(workers)
-    multidplyr::cluster_library(cluster,
-                                c(
-                                  "dplyr",
-                                  "stringr",
-                                  "tidyr",
-                                  "purrr",
-                                  "limma",
-                                  "tibble"
-                                )
+    multidplyr::cluster_library(
+      cluster,
+      c(
+        "dplyr",
+        "stringr",
+        "tidyr",
+        "purrr",
+        "limma",
+        "tibble"
+      )
     )
-    multidplyr::cluster_copy(cluster,
-                             c(
-                               "impute",
-                               "impute_row",
-                               "char_cols",
-                               "col_order",
-                               "run_limma_and_lfc",
-                               "design",
-                               "contrast_matrix",
-                               "gamma_reg_all",
-                               "calc_weights",
-                               "calc_lfc",
-                               "impute_nested",
-                               "non_miss_result",
-                               'id_col'
-                             )
+    multidplyr::cluster_copy(
+      cluster,
+      c(
+        "impute",
+        "impute_row",
+        "char_cols",
+        "col_order",
+        "run_limma_and_lfc",
+        "design",
+        "contrast_matrix",
+        "gamma_reg_all",
+        "calc_weights",
+        "calc_lfc",
+        "impute_nested",
+        "non_miss_result",
+        "id_col"
+      )
     )
   }
   results <- tibble::tibble(
@@ -83,12 +86,20 @@ run_pipeline <- function(data,
   }
   results <- results %>%
     dplyr::mutate(
-      #Run imputation
-      imputed_data = purrr::map(imputation, ~impute(impute_nested, char_cols, col_order)),
-      #Run limma
-      limma_results = purrr::map(imputed_data, run_limma_and_lfc, design, contrast_matrix, gamma_reg_all, id_col),
-      #Bind non-missing data
-      limma_results = purrr::map(limma_results, dplyr::bind_rows, non_miss_result)
+      # Run imputation
+      imputed_data = purrr::map(imputation,
+                                ~ impute(impute_nested, char_cols, col_order)
+      ),
+      # Run limma
+      limma_results = purrr::map(imputed_data,
+                                 run_limma_and_lfc,
+                                 design, contrast_matrix, gamma_reg_all, id_col
+      ),
+      # Bind non-missing data
+      limma_results = purrr::map(limma_results,
+                                 dplyr::bind_rows,
+                                 non_miss_result
+      )
     )
   if (workers != 1) {
     results <- results %>%
@@ -99,7 +110,7 @@ run_pipeline <- function(data,
 }
 
 
-impute <- function(data, char_cols, order){
+impute <- function(data, char_cols, order) {
   data %>%
     purrr::map(
       dplyr::mutate,
@@ -111,8 +122,8 @@ impute <- function(data, char_cols, order){
     dplyr::select(dplyr::all_of(order))
 }
 
-impute_nest <- function(data, condition, gamma_reg_model, LOQ){
-  if(anyNA(data)){
+impute_nest <- function(data, condition, gamma_reg_model, LOQ) {
+  if (anyNA(data)) {
     data <- data %>%
       tibble::rownames_to_column(var = "tmp_id") %>%
       dplyr::mutate(
@@ -122,17 +133,17 @@ impute_nest <- function(data, condition, gamma_reg_model, LOQ){
     data[["sd"]] <- stats::predict(gamma_reg_model[[condition]], data, type = "response")
     data %>%
       tidyr::nest(data = -c(mean, sd, tmp_id))
-  }else{
+  } else {
     return(data)
   }
 }
 
-impute_row <- function(mean, sd, data){
-  if(!anyNA(data)){
+impute_row <- function(mean, sd, data) {
+  if (!anyNA(data)) {
     return(data)
-  }else{
+  } else {
     data <- as.data.frame(data)
-    data[is.na(data)] <-  stats::rnorm(n = sum(is.na(data)), mean = mean, sd = sd)
+    data[is.na(data)] <- stats::rnorm(n = sum(is.na(data)), mean = mean, sd = sd)
     return(data)
   }
 }

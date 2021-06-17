@@ -10,32 +10,33 @@
 #' @return data with outliers removed
 #' @export
 #'
-#'@importFrom dplyr %>%
-#'@import utils
+#' @importFrom dplyr %>%
+#' @import utils
 #'
 #' @examples
 utils::globalVariables(c("flag", "value", "ref", "all_of"))
-filter_outliers <- function(data, target = NULL, percent = 1, k = 1.5){
+filter_outliers <- function(data, target = NULL, percent = 1, k = 1.5) {
   target_cols <- check_target(target)
   limit <- data %>%
     dplyr::select(!!target_cols) %>%
     ncol()
-  limit <- limit*percent
+  limit <- limit * percent
   data %>%
     dplyr::mutate(
       flag = flag_outliers(dplyr::across(!!target_cols), k = k)
     ) %>%
-    dplyr::filter(flag<limit) %>%
+    dplyr::filter(flag < limit) %>%
     dplyr::select(-flag)
 }
 
-flag_outliers <- function(..., k = 1.5, lower_limit = NULL){
+flag_outliers <- function(..., k = 1.5, lower_limit = NULL) {
   x <- tibble::as_tibble(...)
   if (is.null(lower_limit)) {
     lower_limit <- stats::quantile(
       unlist(..., T, F),
-      .25, na.rm = T
-    ) - k*stats::IQR(
+      .25,
+      na.rm = T
+    ) - k * stats::IQR(
       unlist(..., T, F),
       na.rm = T
     )
