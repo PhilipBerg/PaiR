@@ -7,7 +7,15 @@
 single_imputation(data, design, id_col = "id")
 }
 \arguments{
-\item{id_col}{}
+\item{data}{a \code{data.frame} to generate the mean-variance trends for. It
+should contain columns with conditions named as the column names in
+\code{design} (presumably with some suffix).}
+
+\item{design}{a design or model matrix as produced my \code{model.matrix} with
+column names corresponding to the different conditions.}
+
+\item{id_col}{a character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
 }
 \value{
 

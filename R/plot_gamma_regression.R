@@ -1,5 +1,7 @@
 #' Function for plotting the mean-variance gamma regression
 #'
+#'
+#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @param data
 #' @param design
 #' @param id_col

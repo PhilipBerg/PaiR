@@ -13,7 +13,20 @@ run_limma_and_lfc(
 )
 }
 \arguments{
-\item{id_col}{}
+\item{data}{a \code{data.frame} with the samples and feature ids}
+
+\item{design}{a design or model matrix produced by
+\verb{\code{\link[stats]{model.matrix}}}}
+
+\item{contrast_matrix}{a contrast matrix produced by
+\verb{\code{\link[limma]{makeContrasts}}}}
+
+\item{gamma_reg_model}{the regression model produced by
+\verb{\code{\link[pair]{fit_gamma_weights}}} or any \code{glm} with \code{formula}
+\code{sd ~ mean}}
+
+\item{id_col}{a character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
 }
 \value{
 

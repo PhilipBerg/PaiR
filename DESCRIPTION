@@ -22,6 +22,7 @@ Suggests:
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 biocViews:
+RdMacros: Rdpack
 Imports: 
     cowplot,
     dplyr,
@@ -29,6 +30,7 @@ Imports:
     limma,
     magrittr,
     multidplyr,
+    Rdpack,
     purrr,
     rlang,
     stringr,

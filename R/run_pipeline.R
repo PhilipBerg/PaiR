@@ -1,5 +1,7 @@
 #' Title
 #'
+#'
+#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @param data
 #' @param design
 #' @param contrast_matrix

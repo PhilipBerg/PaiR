@@ -38,6 +38,15 @@ for the precision weights. \code{fit_gamma_regressions} returns a list with the 
 
 }
 \description{
+\code{fit_gamma_regressions} is a wrapper function that calls both
+\code{fit_gamma_imputation} and
+\code{fit_gamma_weights}. It returns a list containing
+the models for imputation in \verb{$imputation} and the weights in \verb{$weights}.
+\code{fit_gamma_imputation} returns a list named according to the different
+conditions and \code{fit_gamma_weights} returns a \code{glm} object containing the
+gamma regression.
+}
+\details{
 A more detailed description is yet to come
 }
 \section{Functions}{

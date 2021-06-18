@@ -1,6 +1,16 @@
 utils::globalVariables(c(".", "sd", "model"))
 #' Functions for Fitting the Mean-Variance Gamma Regression Models
 #'
+#' `fit_gamma_regressions` is a wrapper function that calls both
+#'    \code{fit_gamma_imputation} and
+#'    \code{fit_gamma_weights}. It returns a list containing
+#'    the models for imputation in `$imputation` and the weights in `$weights`.
+#'    `fit_gamma_imputation` returns a list named according to the different
+#'    conditions and `fit_gamma_weights` returns a `glm` object containing the
+#'    gamma regression.
+#'
+#' A more detailed description is yet to come
+#'
 #'
 #' @param data a `data.frame` to generate the mean-variance trends for. It
 #'     should contain columns with conditions named as the column names in
@@ -19,16 +29,7 @@ utils::globalVariables(c(".", "sd", "model"))
 #'     `fit_gamma_weights` in `$weights`.
 #' @name Mean-Variance_Gamma_Regressions
 NULL
-#' `fit_gamma_regressions` is a wrapper function that calls both
-#'    \code{fit_gamma_imputation} and
-#'    \code{fit_gamma_weights}. It returns a list containing
-#'    the models for imputation in `$imputation` and the weights in `$weights`.
-#'    `fit_gamma_imputation` returns a list named according to the different
-#'    conditions and `fit_gamma_weights` returns a `glm` object containing the
-#'    gamma regression.
-#'
-#' A more detailed description is yet to come
-#'
+
 #' @describeIn Mean-Variance_Gamma_Regressions Wrapper function that runs both
 #'     `fit_gamma_imputation` and `fit_gamma_weights`
 #' @export
@@ -59,7 +60,6 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
   )
 }
 
-#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @describeIn Mean-Variance_Gamma_Regressions Function that generates per
 #'     condition mean-variance trends used in the imputation procedure.
 #'     Each id in the `id_col` gets one mean and variance calculated for each
@@ -87,7 +87,6 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
 #'     variance across all conditions and one model is then fitted for all
 #'     mean-variance pairs.
 #'
-#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @return
 #' @export
 #'

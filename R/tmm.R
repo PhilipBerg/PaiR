@@ -1,7 +1,7 @@
-#' Trimmed m mean
+utils::globalVariables(c("load_size", "lfc", "A", "w"))
+#' Normalization by Trimmed m Means
 #'
 #' @param data data.frame containing the data to normalize
-#' @param id Column of id variables
 #' @param trim_M percent of fold-change values to trim
 #' @param trim_A percent of means to trim
 #' @param log Return log2 transformed values?
@@ -14,9 +14,7 @@
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(c("load_size", "lfc", "A", "w"))
 tmm <- function(data,
-                id = "id",
                 trim_M = .3,
                 trim_A = .05,
                 log = TRUE,

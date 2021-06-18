@@ -1,24 +1,39 @@
-# " Generates a box-plot for raw, tmm, and psn.
-# "
-# " @param data Dataframe of raw data
-# "
-# " @return ggplot with samples on the x-axis and observed values on the y-axis
-# " @export
-# "
-# " @examples
 utils::globalVariables(c("where", "value", "name", "method", "med", "condition"))
+#' Generates a box-plot for `log2` transformed raw, tmm-, and psn- normalized
+#'     values.
+#'
+#' This function can be used to produce a visual aid to for selection
+#'     normalization method. Ideally, after the data is normalized all
+#'     boxplots should have their median aligned close to the global trend line.
+#'
+#' @inheritParams tmm
+#' @inheritParams prnn
+#' @param data
+#' @param id_col
+#' @param trim_M
+#' @param trim_A
+#' @param target
+#' @param reference_sample Specify a reference sample to normalize to in the
+#'     \code{\link[pair]{tmm}} method
+#'
+#' @return ggplot with samples on the x-axis and observed values on the y-axis,
+#'     different colors correspond to the raw or normalized data. Lines
+#'     corresponds to the global median across all samples.
+#' @export
+#'
+#' @examples
 plot_norm_box <- function(data,
-                          id = "id",
+                          id_col = "id",
                           trim_M = .3,
                           trim_A = .05,
                           target = NULL,
                           reference_sample = NULL) {
   prnn <- data %>%
-    prnn(id = id, load_info = F) %>%
+    prnn(id_col = id_col, load_info = F) %>%
     dplyr::rename_with(~ paste0(., "_prnn"), where(is.numeric))
   tmm <- data %>%
     tmm(
-      id = id,
+      id_col = id_col,
       load_info = F,
       trim_M = trim_M,
       trim_A = trim_A,
@@ -31,8 +46,8 @@ plot_norm_box <- function(data,
       dplyr::across(where(is.numeric), log2)
     ) %>%
     dplyr::rename_with(~ paste0(., "_raw"), where(is.numeric)) %>%
-    dplyr::left_join(prnn, by = id) %>%
-    dplyr::left_join(tmm, by = id) %>%
+    dplyr::left_join(prnn, by = id_col) %>%
+    dplyr::left_join(tmm, by = id_col) %>%
     tidyr::pivot_longer(where(is.numeric)) %>%
     tidyr::extract(name, c("condition", "method"), "^(.*)_(.*)$") %>%
     dplyr::group_by(method) %>%

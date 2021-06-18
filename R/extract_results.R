@@ -1,5 +1,6 @@
 #' Title
 #'
+#'
 #' @param data
 #' @param results
 #' @param alpha

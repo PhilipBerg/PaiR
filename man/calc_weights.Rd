@@ -25,7 +25,7 @@ regression.
 }
 \details{
 \code{calc_weights} takes as input a data frame and a \code{glm} object produced
-by \code{\link[pair]{fit_gamma_regression}} or \code{\link[pair]{fit_gamma_weights}}.
+by \code{\link[pair]{fit_gamma_regressions}} or \code{\link[pair]{fit_gamma_weights}}.
 For all numeric columns, it predicts the standard deviation using the gamma
 regression. It then squares and takes the reciprocal of each value to generate the
 precision weights.

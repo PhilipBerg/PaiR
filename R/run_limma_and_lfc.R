@@ -1,10 +1,18 @@
 #' Title
 #'
-#' @param data
-#' @param design
-#' @param contrast_matrix
-#' @param gamma_reg_model
-#' @param id_col
+#'
+#' @param data a `data.frame` with the samples and feature ids
+#' @param design a design or model matrix produced by
+#'     `\code{\link[stats]{model.matrix}}`
+#' @param contrast_matrix a contrast matrix produced by
+#'     `\code{\link[limma]{makeContrasts}}`
+#' @param gamma_reg_model the regression model produced by
+#'     `\code{\link[pair]{fit_gamma_weights}}` or any `glm` with `formula`
+#'     `sd ~ mean`
+#' @param id_col a character for the name of the column containing the
+#'     name of the features in data (e.g., peptides, proteins, etc.)
+#'
+#'
 #'
 #' @return
 #' @export

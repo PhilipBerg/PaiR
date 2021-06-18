@@ -1,8 +1,11 @@
 #' Title
 #'
+#'
+#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @param data
 #' @param design
-#' @param id_col
+#' @param id_col a character for the name of the column containing the
+#'     name of the features in data (e.g., peptides, proteins, etc.)
 #'
 #' @return
 #' @export
