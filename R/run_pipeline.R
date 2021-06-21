@@ -1,34 +1,61 @@
 utils::globalVariables(
   c("tmp_id", "imputation", "imputed_data", "limma_results")
 )
-#' Title
+#' Run multiple imputation and limma
+#'
+#' This function is an efficient wrapper that fits the needed gamma regressions,
+#' performs multiple imputation and testing with \code{\link[limma]{limma}}
 #'
 #'
-#' @inheritParams Mean-Variance_Gamma_Regressions
-#' @param data
-#' @param design
-#' @param contrast_matrix
-#' @param imputations
-#' @param workers
-#' @param id_col
-#' @param plot_trend
+#' @param data The data to run the pipeline on
+#' @param design A design matrix as produced by \code{\link[stats]{model.matrix}}.
+#' @param contrast_matrix A contrast matrix of comparisons to perfrom see
+#'     \code{\link[limma]{makeContrasts}} for details.
+#' @param imputations Number of imputations to perfrome.
+#' @param workers Number of workers (processes) to run the pipeline with.
+#'    Any value >1 will run the pipeline with parallel computing using the
+#'    \code{\link[multidplyr]{multidplyr-package}}.
+#' @param id_col A character for the name of the column containing the
+#'     name of the features in data (e.g., peptides, proteins, etc.)
+#' @param plot_trend Should the mean-variance trend with the gamma regression be
+#'  plotted?
 #'
-#' @return
+#' @return A tibble with each imputation as a row. The first column contains the
+#'     imputation number, the second contains the imputed data, and the last
+#'     column contains the results produced by \code{\link[pair]{run_limma_and_lfc}}
 #' @export
 #'
 #' @import utils
 #'
 #' @examples
+#' # Generate a design matrix for the data
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+#'
+#' # Set correct colnames, this is important for fit_gamma_*
+#' colnames(design) <- paste0("ng", c(50, 100))
+#'
+#' # Generate the contrast matrix
+#' contrast <- limma::makeContrasts(
+#' contrasts = 'ng100-ng50',
+#' levels = design
+#' )
+#'
+#' # Normalize and log-transform the data
+#' yeast <- prnn(yeast, "identifier")
+#'
+#' \dontrun{
+#' results <- run_pipeline(yeast, design, contrast, 1000, 5, 'identifier', TRUE)
+#' }
 run_pipeline <- function(data,
                          design,
                          contrast_matrix,
                          imputations,
                          workers,
                          id_col = "id",
-                         plot_trend = F) {
+                         plot_trend = FALSE) {
   # Fit gamma models
   gamma_reg_models <- fit_gamma_regressions(data, design, id_col = id_col)
-  gamma_reg_all <- gamma_reg_models$all
+  gamma_reg_weights <- gamma_reg_models$weights
   if (plot_trend) {
     plot_gamma_regression(data, design, id_col = id_col)
   }
@@ -41,12 +68,12 @@ run_pipeline <- function(data,
   conditions <- design %>%
     get_conditions()
   impute_nested <- missing_data %>%
-    prep_data_for_imputation(conditions, gamma_reg_models$individual)
+    prep_data_for_imputation(conditions, gamma_reg_models$imputation)
   # Generate results
   ## Non-missing data
   non_miss_result <- data %>%
     tidyr::drop_na(where(is.numeric)) %>%
-    run_limma_and_lfc(design, contrast_matrix, gamma_reg_all, id_col)
+    run_limma_and_lfc(design, contrast_matrix, gamma_reg_weights, id_col)
   if (workers != 1) {
     cluster <- multidplyr::new_cluster(workers)
     multidplyr::cluster_library(
@@ -70,7 +97,7 @@ run_pipeline <- function(data,
         "run_limma_and_lfc",
         "design",
         "contrast_matrix",
-        "gamma_reg_all",
+        "gamma_reg_weights",
         "calc_weights",
         "calc_lfc",
         "impute_nested",
@@ -98,7 +125,7 @@ run_pipeline <- function(data,
       limma_results = purrr::map(
         imputed_data,
         run_limma_and_lfc,
-        design, contrast_matrix, gamma_reg_all, id_col
+        design, contrast_matrix, gamma_reg_weights, id_col
       ),
       # Bind non-missing data
       limma_results = purrr::map(

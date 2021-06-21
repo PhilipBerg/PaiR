@@ -24,9 +24,9 @@ utils::globalVariables(c(".", "sd", "model"))
 #'     list where the names corresponds to the conditions. Each index contains
 #'     a `glm` object with the gamma regression for the mean-variance trend.
 #'     `fit_gamma_weights` returns a `glm` object with the gamma regression
-#'     for the precision weights. `fit_gamma_regressions` returns a list with the results from
-#'     `fit_gamma_imputation` in `$imputation` and the results from
-#'     `fit_gamma_weights` in `$weights`.
+#'     for the precision weights. `fit_gamma_regressions` returns a list with
+#'     the results from `fit_gamma_imputation` in `$imputation` and the results
+#'     from `fit_gamma_weights` in `$weights`.
 #' @name Mean-Variance_Gamma_Regressions
 NULL
 
@@ -37,18 +37,17 @@ NULL
 #'
 #' @examples
 #' # Generate a design matrix for the data
-#' design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 #'
 #' # Set correct colnames, this is important for fit_gamma_*
-#' colnames(design) <- paste0('ng', c(50, 100))
+#' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log-transform the data
-#' yeast <- prnn(yeast, 'identifier')
+#' yeast <- prnn(yeast, "identifier")
 #'
 #'
 #' # Fit all gamma regression models for the mean-variance trend
-#' all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')
-#'
+#' all_gamma_models <- fit_gamma_regressions(yeast, design, "identifier")
 fit_gamma_regressions <- function(data, design, id_col = "id") {
   gamma_reg_imp <- data %>%
     fit_gamma_imputation(design, id_col)
@@ -72,8 +71,7 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
 #' @examples
 #' # Fit the gamma regression models for the mean-variance trend used in the
 #' # imputation procedure
-#' gamma_imputation_models <- fit_gamma_imputation(yeast, design, 'identifier')
-#'
+#' gamma_imputation_models <- fit_gamma_imputation(yeast, design, "identifier")
 fit_gamma_imputation <- function(data, design, id_col = "id") {
   data %>%
     prep_data_for_gamma_imputation_regression(design, id_col) %>%
@@ -95,11 +93,8 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
 #' @examples
 #' # Fit the gamma regression model for the mean-variance trend used for
 #' # estimating the precision weights used in limma
-#' gamma_weight_model <- fit_gamma_weights(yeast, design, 'identifier')
-#'
-#' # Note that, unless data has been log-transformed, it is likely that the
-#' # regression models will to not converge
-fit_gamma_weights <- function(data, design, id_col = "id"){
+#' gamma_weight_model <- fit_gamma_weights(yeast, design, "identifier")
+fit_gamma_weights <- function(data, design, id_col = "id") {
   data %>%
     prep_data_for_gamma_weight_regression(design, id_col) %>%
     fit_gamma_model() %>%
@@ -161,14 +156,15 @@ extract_model <- function(data) {
     data %>%
       magrittr::use_series(model) %>%
       magrittr::extract2(1)
-  }else if(is.list(data)){
+  } else if (is.list(data)) {
     data %>%
       purrr::map(magrittr::use_series, model) %>%
       purrr::map(magrittr::extract2, 1)
-  }else {
-    error_message <- paste('Data of class',
-                           paste0(class(data), collapse = ', '),
-                           'not suppported.'
+  } else {
+    error_message <- paste(
+      "Data of class",
+      paste0(class(data), collapse = ", "),
+      "not suppported."
     )
     rlang::abort(error_message)
   }

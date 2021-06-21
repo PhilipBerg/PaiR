@@ -7,11 +7,14 @@
 plot_ma(hits)
 }
 \arguments{
-\item{hits}{}
+\item{hits}{a \code{tibble} produced by \code{\link[pair]{extract_results}}}
 }
 \value{
-
+a \code{ggplot2} of the distribution of the hits
 }
 \description{
 Generate a MA-plot of the analysis
+}
+\examples{
+
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_pipeline.R
 \name{run_pipeline}
 \alias{run_pipeline}
-\title{Title}
+\title{Run multiple imputation and limma}
 \usage{
 run_pipeline(
   data,
@@ -11,25 +11,55 @@ run_pipeline(
   imputations,
   workers,
   id_col = "id",
-  plot_trend = F
+  plot_trend = FALSE
 )
 }
 \arguments{
-\item{data}{a \code{data.frame} to generate the mean-variance trends for. It
-should contain columns with conditions named as the column names in
-\code{design} (presumably with some suffix).}
+\item{data}{The data to run the pipeline on}
 
-\item{design}{a design or model matrix as produced my \code{model.matrix} with
-column names corresponding to the different conditions.}
+\item{design}{A design matrix as produced by \code{\link[stats]{model.matrix}}.}
 
-\item{id_col}{a character for the name of the column containing the
+\item{contrast_matrix}{A contrast matrix of comparisons to perfrom see
+\code{\link[limma]{makeContrasts}} for details.}
+
+\item{imputations}{Number of imputations to perfrome.}
+
+\item{workers}{Number of workers (processes) to run the pipeline with.
+Any value >1 will run the pipeline with parallel computing using the
+\code{\link[multidplyr]{multidplyr-package}}.}
+
+\item{id_col}{A character for the name of the column containing the
 name of the features in data (e.g., peptides, proteins, etc.)}
 
-\item{plot_trend}{}
+\item{plot_trend}{Should the mean-variance trend with the gamma regression be
+plotted?}
 }
 \value{
-
+A tibble with each imputation as a row. The first column contains the
+imputation number, the second contains the imputed data, and the last
+column contains the results produced by \code{\link[pair]{run_limma_and_lfc}}
 }
 \description{
-Title
+This function is an efficient wrapper that fits the needed gamma regressions,
+performs multiple imputation and testing with \code{\link[limma]{limma}}
+}
+\examples{
+# Generate a design matrix for the data
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+
+# Set correct colnames, this is important for fit_gamma_*
+colnames(design) <- paste0("ng", c(50, 100))
+
+# Generate the contrast matrix
+contrast <- limma::makeContrasts(
+contrasts = 'ng100-ng50',
+levels = design
+)
+
+# Normalize and log-transform the data
+yeast <- prnn(yeast, "identifier")
+
+\dontrun{
+results <- run_pipeline(yeast, design, contrast, 1000, 5, 'identifier', TRUE)
+}
 }

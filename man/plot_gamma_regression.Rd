@@ -7,17 +7,15 @@
 plot_gamma_regression(data, design, id_col = "id")
 }
 \arguments{
-\item{data}{a \code{data.frame} to generate the mean-variance trends for. It
-should contain columns with conditions named as the column names in
-\code{design} (presumably with some suffix).}
+\item{data}{The data to use for producing the plots}
 
-\item{design}{a design or model matrix as produced my \code{model.matrix} with
-column names corresponding to the different conditions.}
+\item{design}{A design matrix as produced by \code{\link[stats]{model.matrix}}.}
 
-\item{id_col}{}
+\item{id_col}{A character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
 }
 \value{
-
+a \code{ggplot2} object with the
 }
 \description{
 Function for plotting the mean-variance gamma regression

@@ -26,8 +26,8 @@ run_limma_and_lfc <- function(data,
                               gamma_reg_model,
                               id_col = "id") {
   row_names <- data[[id_col]]
-  condi <- colnames(design) %>%
-    stringr::str_flatten("|")
+  condi <- design %>%
+    get_conditions()
   data <- data %>%
     dplyr::select(tidyr::matches(condi)) %>%
     as.data.frame()

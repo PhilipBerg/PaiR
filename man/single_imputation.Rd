@@ -25,14 +25,14 @@ by imputed values.
 }
 \examples{
 # Generate a design matrix for the data
-design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 
 # Set correct colnames, this is important for fit_gamma_weights
-colnames(design) <- paste0('ng', c(50, 100))
+colnames(design) <- paste0("ng", c(50, 100))
 
 yeast \%>\%
-# Normalize and log-transform the data
-  prnn('identifier') \%>\%
-# Run the imputation
-  single_imputation(design, 'identifier')
+  # Normalize and log-transform the data
+  prnn("identifier") \%>\%
+  # Run the imputation
+  single_imputation(design, "identifier")
 }

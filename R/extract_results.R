@@ -7,22 +7,51 @@ utils::globalVariables(
     "median_mean"
   )
 )
-#' Title
+#' Extract the results from running the multiple imputations
 #'
 #'
-#' @param data
-#' @param results
-#' @param alpha
-#' @param abs_lfc
-#' @param pcor
-#' @param id_col
 #'
-#' @return
+#'
+#' @param data The data used to generate the results when calling
+#'   \code{\link[pair]{run_pipeline}}
+#' @param results The output from \code{\link[pair]{run_pipeline}}
+#' @param alpha The alpha value to decide when a feature is significant
+#' @param abs_lfc If a LFC cut-off values should be used in addition to the
+#'     alpha value
+#' @param pcor A p-value correction method; has to one from
+#'     \code{\link[stats]{p.adjust.methods}}
+#' @param id_col a character for the name of the column containing the
+#'     name of the features in data (e.g., peptides, proteins, etc.)
+#'
+#' @return A tibble with a summary of the results. From all imputations it
+#'     calculates the binomial p-value, the median: LFC, p-value (from all testing),
+#'     and the mean in each comparison. It also returns a character column,
+#'     comparison, that indicates what comparison the results come from and a
+#'     boolean column, imputed, indicating if there was any imputed value or not.
 #' @export
 #'
 #' @import utils
 #'
 #' @examples
+#' # Generate a design matrix for the data
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+#'
+#' # Set correct colnames, this is important for fit_gamma_*
+#' colnames(design) <- paste0("ng", c(50, 100))
+#'
+#' # Generate the contrast matrix
+#' contrast <- limma::makeContrasts(
+#' contrasts = 'ng100-ng50',
+#' levels = design
+#' )
+#'
+#' # Normalize and log-transform the data
+#' yeast <- prnn(yeast, "identifier")
+#'
+#' \dontrun{
+#' results <- run_pipeline(yeast, design, contrast, 1000, 5, 'identifier', TRUE)
+#' extract_results(yeast, results, .05, 1, 'fdr', 'identifier')
+#' }
 extract_results <- function(data,
                             results,
                             alpha = .05,

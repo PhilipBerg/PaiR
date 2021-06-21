@@ -14,15 +14,22 @@ utils::globalVariables(c("flag", "value", "ref", "all_of"))
 #' @import utils
 #'
 #' @examples
-filter_outliers <- function(data, target = NULL, percent = 1, k = 1.5) {
+filter_outliers <- function(data,
+                            target = NULL,
+                            percent = 1,
+                            k = 1.5,
+                            lower_limit = NULL) {
   target_cols <- check_target(target)
   limit <- data %>%
     dplyr::select(!!target_cols) %>%
     ncol()
   limit <- limit * percent
   data %>%
-    dplyr::mutate(
-      flag = flag_outliers(dplyr::across(!!target_cols), k = k)
+    dplyr::mutate(flag = flag_outliers(
+      dplyr::across(!!target_cols),
+      k = k,
+      lower_limit = lower_limit
+    )
     ) %>%
     dplyr::filter(flag < limit) %>%
     dplyr::select(-flag)

@@ -1,14 +1,15 @@
 utils::globalVariables(c("significant", "median_lfc"))
 #' Generate a MA-plot of the analysis
 #'
-#' @param hits
+#' @param hits a `tibble` produced by \code{\link[pair]{extract_results}}
 #'
-#' @return
+#' @return a `ggplot2` of the distribution of the hits
 #' @export
 #'
 #' @import utils
 #'
 #' @examples
+#'
 plot_ma <- function(hits) {
   hits %>%
     dplyr::mutate(
