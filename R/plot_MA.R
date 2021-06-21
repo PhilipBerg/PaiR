@@ -1,3 +1,4 @@
+utils::globalVariables(c("significant", "median_lfc"))
 #' Generate a MA-plot of the analysis
 #'
 #' @param hits
@@ -8,7 +9,6 @@
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(c("significant", "median_lfc"))
 plot_ma <- function(hits) {
   hits %>%
     dplyr::mutate(

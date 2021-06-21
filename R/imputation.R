@@ -12,7 +12,6 @@
 #'
 #' @return a `data.frame` with `NA` values replaced by imputed values
 #' @export
-#' @importFrom dplyr %>%
 #'
 #' @examples
 #' # Generate a design matrix for the data

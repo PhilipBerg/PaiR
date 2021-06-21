@@ -1,3 +1,6 @@
+utils::globalVariables(
+  c("tmp_id", "imputation", "imputed_data", "limma_results")
+)
 #' Title
 #'
 #'
@@ -16,9 +19,6 @@
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(
-  c("tmp_id", "imputation", "imputed_data", "limma_results")
-)
 run_pipeline <- function(data,
                          design,
                          contrast_matrix,

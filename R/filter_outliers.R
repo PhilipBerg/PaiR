@@ -1,3 +1,4 @@
+utils::globalVariables(c("flag", "value", "ref", "all_of"))
 #' Filter lowly abundant features
 #'
 #' @param data data to filter from
@@ -10,11 +11,9 @@
 #' @return data with outliers removed
 #' @export
 #'
-#' @importFrom dplyr %>%
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(c("flag", "value", "ref", "all_of"))
 filter_outliers <- function(data, target = NULL, percent = 1, k = 1.5) {
   target_cols <- check_target(target)
   limit <- data %>%

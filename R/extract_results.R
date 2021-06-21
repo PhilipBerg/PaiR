@@ -1,3 +1,12 @@
+utils::globalVariables(
+  c(
+    "p_val",
+    "median_mean.x",
+    "median_mean.y",
+    "comparison",
+    "median_mean"
+  )
+)
 #' Title
 #'
 #'
@@ -14,15 +23,6 @@
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(
-  c(
-    "p_val",
-    "median_mean.x",
-    "median_mean.y",
-    "comparison",
-    "median_mean"
-  )
-)
 extract_results <- function(data,
                             results,
                             alpha = .05,

@@ -13,7 +13,6 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #'
 #' @return data.frame
 #' @export
-#' @importFrom dplyr %>%
 #' @importFrom dplyr .data
 #' @import utils
 #'

@@ -9,7 +9,6 @@ utils::globalVariables(c(".", "sd", "model"))
 #'    conditions and `fit_gamma_weights` returns a `glm` object containing the
 #'    gamma regression.
 #'
-#' @importFrom dplyr %>%
 #' @import utils
 #'
 #'
@@ -35,7 +34,6 @@ NULL
 #'     `fit_gamma_imputation` and `fit_gamma_weights`
 #' @export
 #'
-#' @importFrom dplyr %>%
 #'
 #' @examples
 #' # Generate a design matrix for the data
@@ -70,7 +68,6 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
 #'     condition. One model is then fitted per condition.
 #' @return
 #' @export
-#' @importFrom dplyr %>%
 #'
 #' @examples
 #' # Fit the gamma regression models for the mean-variance trend used in the
@@ -94,7 +91,6 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
 #'
 #' @return
 #' @export
-#' @importFrom dplyr %>%
 #'
 #' @examples
 #' # Fit the gamma regression model for the mean-variance trend used for

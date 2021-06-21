@@ -1,3 +1,4 @@
+utils::globalVariables(c(".", "sd", "model"))
 #' Function for plotting the mean-variance gamma regression
 #'
 #'
@@ -9,11 +10,9 @@
 #' @return
 #' @export
 #'
-#' @importFrom dplyr %>%
 #' @import utils
 #'
 #' @examples
-utils::globalVariables(c(".", "sd", "model"))
 plot_gamma_regression <- function(data, design, id_col = "id") {
   precision_plot <- data() %>%
     prep_data_for_gamma_weight_regression() %>%
