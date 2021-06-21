@@ -21,30 +21,21 @@ tmm <- function(data,
                 load_info = FALSE,
                 target = NULL,
                 reference_sample = NULL) {
+  target <- rlang::enquo(target)
+  target <- check_target(target)
   data_filtered <- data %>%
-    tidyr::drop_na()
-  if (is.null(reference_sample) & is.null(target)) {
-    target_cols <- rlang::expr(where(is.numeric))
-    reference_sample <- calc_cv(data_filtered, target_cols)
+    tidyr::drop_na(!!target)
+  if (is.null(reference_sample)) {
+    reference_sample <- calc_cv(data_filtered, target)
     reference_sample <-
       names(reference_sample)[reference_sample == min(reference_sample)]
-  } else if (is.null(reference_sample)) {
-    target_cols <- rlang::expr(where(is.numeric))
-    reference_sample <- calc_cv(data_filtered, target_cols)
-    reference_sample <-
-      names(reference_sample)[reference_sample == min(reference_sample)]
-    target_cols <- c(target, reference_sample)
-  } else if (is.null(target)) {
-    target_cols <- rlang::expr(where(is.numeric))
-  } else {
-    target_cols <- c(target, reference_sample)
   }
-  loading_sizes <- calc_loading_size(data_filtered, target_cols)
+  loading_sizes <- calc_loading_size(data_filtered, target)
   reference_loading_size <-
     loading_sizes$load_size[loading_sizes$sample == reference_sample]
   reference_sample <- rlang::sym(reference_sample)
   scaling_factors <- data_filtered %>%
-    dplyr::select(!!target_cols) %>%
+    dplyr::select(!!target) %>%
     tidyr::pivot_longer(-!!reference_sample, names_to = "sample") %>%
     dplyr::left_join(loading_sizes, by = "sample") %>%
     dplyr::mutate(
@@ -81,7 +72,7 @@ tmm <- function(data,
   if (log) {
     data <- data %>%
       dplyr::mutate(
-        dplyr::across(!!target_cols, log2)
+        dplyr::across(!!target, log2)
       )
   }
   if (load_info) {

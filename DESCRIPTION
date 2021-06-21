@@ -36,7 +36,8 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    tidyselect
+    tidyselect,
+    glue
 URL: https://github.com/PhilipBerg/pair
 BugReports: https://github.com/PhilipBerg/pair/issues
 Depends: 

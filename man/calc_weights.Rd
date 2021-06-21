@@ -9,10 +9,6 @@ calc_weights(data, gamma_reg_model)
 \arguments{
 \item{data}{A \code{data.frame} who's quantitative columns should be converted to
 precision weights.}
-
-\item{gamma_reg_model}{a \code{glm} object as produced by
-\code{\link[pair]{fit_gamma_regressions}} or \code{\link[pair]{fit_gamma_weights}}.
-Any \code{glm} object with \code{formula} \code{sd ~ mean} is valid.}
 }
 \value{
 The same \code{data.frame} but with all quantitative values replaced by
@@ -24,11 +20,7 @@ replaced by their corresponding precision weights estimated from the gamma
 regression.
 }
 \details{
-\code{calc_weights} takes as input a data frame and a \code{glm} object produced
-by \code{\link[pair]{fit_gamma_regressions}} or \code{\link[pair]{fit_gamma_weights}}.
-For all numeric columns, it predicts the standard deviation using the gamma
-regression. It then squares and takes the reciprocal of each value to generate the
-precision weights.
+
 }
 \examples{
 # Generate a design matrix for the data

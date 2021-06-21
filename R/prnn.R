@@ -22,18 +22,19 @@ prnn <- function(data,
                  log = TRUE,
                  load_info = FALSE,
                  target = NULL) {
-  target_cols <- check_target(target)
+  target <- rlang::enquo(target)
+  target <- check_target(target)
   data_filtered <- data %>%
-    tidyr::drop_na()
-  loading_sizes <- calc_loading_size(data_filtered, target_cols)
+    tidyr::drop_na(!!target)
+  loading_sizes <- calc_loading_size(data_filtered, target)
   pseudo_reference <- data_filtered %>%
-    tidyr::pivot_longer(!!target_cols) %>%
+    tidyr::pivot_longer(!!target) %>%
     dplyr::group_by(.data[[id_col]]) %>%
     dplyr::summarise(
       ref = prod(value^(1 / dplyr::n()))
     )
   scaling_factors <- data_filtered %>%
-    tidyr::pivot_longer(!!target_cols, names_to = "sample") %>%
+    tidyr::pivot_longer(!!target, names_to = "sample") %>%
     dplyr::left_join(pseudo_reference, by = id_col) %>%
     dplyr::mutate(
       value = value / ref
@@ -49,7 +50,7 @@ prnn <- function(data,
   if (log) {
     data <- data %>%
       dplyr::mutate(
-        dplyr::across(!!target_cols, log2)
+        dplyr::across(!!target, log2)
       )
   }
   if (load_info) {

@@ -2,7 +2,6 @@ utils::globalVariables(c(".", "sd", "model"))
 #' Function for plotting the mean-variance gamma regression
 #'
 #'
-#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @param data The data to use for producing the plots
 #' @param design A design matrix as produced by \code{\link[stats]{model.matrix}}.
 #' @param id_col A character for the name of the column containing the

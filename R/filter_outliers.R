@@ -1,32 +1,47 @@
-utils::globalVariables(c("flag", "value", "ref", "all_of"))
+utils::globalVariables(c("flag", "value", "ref", "where"))
 #' Filter lowly abundant features
 #'
+#' Function for filtering lowly abundant features.
+#' By default, it uses all numerical columsn
+#'
 #' @param data data to filter from
-#' @param target columns to base the filtering on
-#' @param percent A feature gets filtered out if it is lowly abundant in `percent`
-#'  columns
+#' @param target columns to base the filtering on, supports \code{\link[tidyselect]{tidyselect-package}}
+#' @param percent A feature gets filtered out if it is lowly abundant or missing
+#'  in `percent` columns
 #' @param k Parameter for the lower limit of Tukey's fence, any value bellow this
 #' will be considered an outlier
+#' @param lower_limit a user defined lower limit at which a measurement is
+#'   considered an outlier
 #'
 #' @return data with outliers removed
 #' @export
 #'
 #' @import utils
 #'
+#'
 #' @examples
+#' # Since Tukey's fences are not ideal for raw proteomics data one could use
+#' # the e.g., the tenth percentile as a indicator of lower abundance
+#' filter_outliers(yeast, lower_limit = stats::quantile(yeast[-1], .1, na.rm = TRUE))
+#' # We recommend normalizing the data before filtering outliers.
+#' # This way we ensure that no peptides are considered outliers as an effect
+#' # of a set of samples, one average, have lower quantification
+#' yeast <- prnn(yeast, 'identifier')
+#' filter_outliers(yeast, -1, 1, 1.5)
 filter_outliers <- function(data,
                             target = NULL,
                             percent = 1,
                             k = 1.5,
                             lower_limit = NULL) {
-  target_cols <- check_target(target)
+  target <- rlang::enquo(target)
+  target <- check_target(target)
   limit <- data %>%
-    dplyr::select(!!target_cols) %>%
+    dplyr::select(!!target) %>%
     ncol()
   limit <- limit * percent
   data %>%
     dplyr::mutate(flag = flag_outliers(
-      dplyr::across(!!target_cols),
+      dplyr::across(!!target),
       k = k,
       lower_limit = lower_limit
     )
@@ -39,12 +54,12 @@ flag_outliers <- function(..., k = 1.5, lower_limit = NULL) {
   x <- tibble::as_tibble(...)
   if (is.null(lower_limit)) {
     lower_limit <- stats::quantile(
-      unlist(..., T, F),
+      unlist(..., TRUE, FALSE),
       .25,
-      na.rm = T
+      na.rm = TRUE
     ) - k * stats::IQR(
-      unlist(..., T, F),
-      na.rm = T
+      unlist(..., TRUE, FALSE),
+      na.rm = TRUE
     )
   }
   x %>%

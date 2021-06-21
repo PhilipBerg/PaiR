@@ -45,7 +45,6 @@ NULL
 #' # Normalize and log-transform the data
 #' yeast <- prnn(yeast, "identifier")
 #'
-#'
 #' # Fit all gamma regression models for the mean-variance trend
 #' all_gamma_models <- fit_gamma_regressions(yeast, design, "identifier")
 fit_gamma_regressions <- function(data, design, id_col = "id") {
@@ -69,6 +68,7 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
 #' @export
 #'
 #' @examples
+#'
 #' # Fit the gamma regression models for the mean-variance trend used in the
 #' # imputation procedure
 #' gamma_imputation_models <- fit_gamma_imputation(yeast, design, "identifier")
@@ -83,7 +83,7 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
 
 #' @describeIn Mean-Variance_Gamma_Regressions Function to produce the
 #'     mean-variance trend used to calculate the precision weights used in
-#'     \code{\link[limma]{limma}}. Each id in the `id_col` gets one mean and one
+#'     \code{\link[limma]{lmFit}}. Each id in the `id_col` gets one mean and one
 #'     variance across all conditions and one model is then fitted for all
 #'     mean-variance pairs.
 #'
@@ -91,6 +91,7 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
 #' @export
 #'
 #' @examples
+#'
 #' # Fit the gamma regression model for the mean-variance trend used for
 #' # estimating the precision weights used in limma
 #' gamma_weight_model <- fit_gamma_weights(yeast, design, "identifier")

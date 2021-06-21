@@ -2,13 +2,14 @@
 % Please edit documentation in R/run_limma_and_lfc.R
 \name{run_limma_and_lfc}
 \alias{run_limma_and_lfc}
-\title{Title}
+\title{Run limma and calculate LFC}
 \usage{
 run_limma_and_lfc(
   data,
   design,
   contrast_matrix,
-  gamma_reg_model,
+  gamma_reg_model = NULL,
+  weights = NULL,
   id_col = "id"
 )
 }
@@ -16,14 +17,16 @@ run_limma_and_lfc(
 \item{data}{a \code{data.frame} with the samples and feature ids}
 
 \item{design}{a design or model matrix produced by
-\verb{\code{\link[stats]{model.matrix}}}}
+\code{\link[stats]{model.matrix}}}
 
 \item{contrast_matrix}{a contrast matrix produced by
-\verb{\code{\link[limma]{makeContrasts}}}}
+\code{\link[limma]{makeContrasts}}}
 
 \item{gamma_reg_model}{the regression model produced by
-\verb{\code{\link[pair]{fit_gamma_weights}}} or any \code{glm} with \code{formula}
+\code{\link[pair]{fit_gamma_weights}} or any \code{glm} with \code{formula}
 \code{sd ~ mean}}
+
+\item{weights}{a matrix of precision weights}
 
 \item{id_col}{a character for the name of the column containing the
 name of the features in data (e.g., peptides, proteins, etc.)}
@@ -32,5 +35,9 @@ name of the features in data (e.g., peptides, proteins, etc.)}
 
 }
 \description{
-Title
+Function to calculate LFC, run limma using \code{\link[limma]{lmFit}}, \code{\link[limma]{contrasts.fit}},
+and \code{\link[limma]{eBayes}} with the flag robust = TRUE.
+If neither \code{weights} or \code{gamma_reg_model} is provided, then \code{lmFit} will be run
+without precision weights. If both are provided, then it will default to
+using the \code{gamma_reg_model} model to produce the weights.
 }

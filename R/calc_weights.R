@@ -5,7 +5,8 @@
 #' regression.
 #'
 #' \code{calc_weights} takes as input a data frame and a `glm` object produced
-#' by \code{\link[pair]{fit_gamma_regressions}} or \code{\link[pair]{fit_gamma_weights}}.
+#' by `fit_gamma_regressions` or `fit_gamma_weights`,
+#' see \code{\link[pair]{Mean-Variance_Gamma_Regressions} for details.
 #' For all numeric columns, it predicts the standard deviation using the gamma
 #' regression. It then squares and takes the reciprocal of each value to generate the
 #' precision weights.
@@ -13,12 +14,14 @@
 #' @param data A `data.frame` who's quantitative columns should be converted to
 #'  precision weights.
 #' @param gamma_reg_model a `glm` object as produced by
-#'  \code{\link[pair]{fit_gamma_regressions}} or \code{\link[pair]{fit_gamma_weights}}.
+#'  \code{fit_gamma_regressions} or \code{fit_gamma_weights},
+#'   see \code{\link[pair]{Mean-Variance_Gamma_Regressions} for details.
 #'  Any `glm` object with `formula` `sd ~ mean` is valid.
 #'
 #'
 #' @return The same `data.frame` but with all quantitative values replaced by
 #'  their precision weights
+#'
 #' @export
 #'
 #' @examples

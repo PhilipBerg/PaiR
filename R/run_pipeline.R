@@ -4,7 +4,7 @@ utils::globalVariables(
 #' Run multiple imputation and limma
 #'
 #' This function is an efficient wrapper that fits the needed gamma regressions,
-#' performs multiple imputation and testing with \code{\link[limma]{limma}}
+#' performs multiple imputation and testing with \code{\link[limma]{01.Introduction}}
 #'
 #'
 #' @param data The data to run the pipeline on
@@ -125,7 +125,7 @@ run_pipeline <- function(data,
       limma_results = purrr::map(
         imputed_data,
         run_limma_and_lfc,
-        design, contrast_matrix, gamma_reg_weights, id_col
+        design, contrast_matrix, gamma_reg_weights, NULL, id_col
       ),
       # Bind non-missing data
       limma_results = purrr::map(

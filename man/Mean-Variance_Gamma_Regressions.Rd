@@ -58,7 +58,7 @@ condition. One model is then fitted per condition.
 
 \item \code{fit_gamma_weights}: Function to produce the
 mean-variance trend used to calculate the precision weights used in
-\code{\link[limma]{limma}}. Each id in the \code{id_col} gets one mean and one
+\code{\link[limma]{lmFit}}. Each id in the \code{id_col} gets one mean and one
 variance across all conditions and one model is then fitted for all
 mean-variance pairs.
 }}
@@ -73,12 +73,13 @@ colnames(design) <- paste0("ng", c(50, 100))
 # Normalize and log-transform the data
 yeast <- prnn(yeast, "identifier")
 
-
 # Fit all gamma regression models for the mean-variance trend
 all_gamma_models <- fit_gamma_regressions(yeast, design, "identifier")
+
 # Fit the gamma regression models for the mean-variance trend used in the
 # imputation procedure
 gamma_imputation_models <- fit_gamma_imputation(yeast, design, "identifier")
+
 # Fit the gamma regression model for the mean-variance trend used for
 # estimating the precision weights used in limma
 gamma_weight_model <- fit_gamma_weights(yeast, design, "identifier")
