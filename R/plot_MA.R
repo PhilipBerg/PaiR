@@ -1,4 +1,4 @@
-#' Title
+#' Generate a MA-plot of the analysis
 #'
 #' @param hits
 #'

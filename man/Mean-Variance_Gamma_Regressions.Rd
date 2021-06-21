@@ -46,9 +46,6 @@ the models for imputation in \verb{$imputation} and the weights in \verb{$weight
 conditions and \code{fit_gamma_weights} returns a \code{glm} object containing the
 gamma regression.
 }
-\details{
-A more detailed description is yet to come
-}
 \section{Functions}{
 \itemize{
 \item \code{fit_gamma_regressions}: Wrapper function that runs both
@@ -72,6 +69,10 @@ design <- model.matrix(~0+factor(rep(1:2, each = 3)))
 
 # Set correct colnames, this is important for fit_gamma_*
 colnames(design) <- paste0('ng', c(50, 100))
+
+# Normalize and log-transform the data
+yeast <- prnn(yeast, 'identifier')
+
 
 # Fit all gamma regression models for the mean-variance trend
 all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')

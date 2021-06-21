@@ -9,11 +9,11 @@ A data frame with 10599 rows and 13 variables:
 \describe{
 \item{identifier}{id column for features, true positives contains UPS and
 true negatives contains Cre}
-\item{fmol25_* }{Biological replicates with true positives spiked-in from 25
+\item{fmol25_* }{Technical replicates with true positives spiked-in from 25
 fmol UPS1 peptides}
-\item{fmol50_* }{Biological replicates with true positives spiked-in from 50
+\item{fmol50_* }{Technical replicates with true positives spiked-in from 50
 fmol UPS1 peptides}
-\item{fmol100_* }{Biological replicates with true positives spiked-in from
+\item{fmol100_* }{Technical replicates with true positives spiked-in from
 100 fmol UPS1 peptides}
 }
 }
@@ -25,7 +25,8 @@ ups
 }
 \description{
 A dataset containing quantification of peptides with
-true positives peptides spiked-in from UPS1 at three different concentrations
+true positives peptides spiked-in from the Universal Proteomics Standard Set
+1 (UPS1) at three different concentrations
 and true negatives from \emph{Chlamydomonas reinhardtii} with the same
 concentration in all samples. For details see
 \insertCite{berg2019evaluation;textual}{pair} and if you use this dataset

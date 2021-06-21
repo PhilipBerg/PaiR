@@ -1,30 +1,37 @@
-#' Title
+#' Single imputation
 #'
+#' Performs a single imputation run and returns the data with NA values replaced
+#' by imputed values.
 #'
 #' @inheritParams Mean-Variance_Gamma_Regressions
-#' @param data
+#' @param data a `data.frame` to perform the imputation on, missing values should
+#' be `NA`
 #' @param design
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
 #'
-#' @return
+#' @return a `data.frame` with `NA` values replaced by imputed values
 #' @export
+#' @importFrom dplyr %>%
 #'
 #' @examples
+#' # Generate a design matrix for the data
+#' design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+#'
+#' # Set correct colnames, this is important for fit_gamma_weights
+#' colnames(design) <- paste0('ng', c(50, 100))
+#'
+#' yeast %>%
+#' # Normalize and log-transform the data
+#'   prnn('identifier') %>%
+#' # Run the imputation
+#'   single_imputation(design, 'identifier')
 single_imputation <- function(data,
                               design,
                               id_col = "id") {
   conditions <- design %>%
     get_conditions()
-  sd_mean <- data %>%
-    tidyr::pivot_longer(dplyr::matches(conditions)) %>%
-    dplyr::mutate(
-      name = stringr::str_replace(
-        name,
-        paste0("(", conditions, ")", ".*"), "\\1"
-      )
-    )
-  gamma_reg <- sd_mean %>%
+  gamma_reg <- data %>%
     fit_gamma_imputation(design, id_col)
   char_cols <- data %>%
     purrr::keep(is.character)
@@ -80,8 +87,8 @@ prep_data_for_imputation <- function(data, conditions, gamma_reg_imputation) {
     estimate_loq()
   data %>%
     purrr::keep(is.numeric) %>%
-    split.default(stringr::str_extract(names(.), conditions))
-  purrr::imap(impute_nest, gamma_reg_imputation, LOQ)
+    split.default(stringr::str_extract(names(.), conditions)) %>%
+    purrr::imap(impute_nest, gamma_reg_imputation, LOQ)
 }
 
 estimate_loq <- function(data) {

@@ -9,7 +9,8 @@ utils::globalVariables(c(".", "sd", "model"))
 #'    conditions and `fit_gamma_weights` returns a `glm` object containing the
 #'    gamma regression.
 #'
-#' A more detailed description is yet to come
+#' @importFrom dplyr %>%
+#' @import utils
 #'
 #'
 #' @param data a `data.frame` to generate the mean-variance trends for. It
@@ -35,7 +36,6 @@ NULL
 #' @export
 #'
 #' @importFrom dplyr %>%
-#' @import utils
 #'
 #' @examples
 #' # Generate a design matrix for the data
@@ -43,6 +43,10 @@ NULL
 #'
 #' # Set correct colnames, this is important for fit_gamma_*
 #' colnames(design) <- paste0('ng', c(50, 100))
+#'
+#' # Normalize and log-transform the data
+#' yeast <- prnn(yeast, 'identifier')
+#'
 #'
 #' # Fit all gamma regression models for the mean-variance trend
 #' all_gamma_models <- fit_gamma_regressions(yeast, design, 'identifier')
@@ -66,6 +70,7 @@ fit_gamma_regressions <- function(data, design, id_col = "id") {
 #'     condition. One model is then fitted per condition.
 #' @return
 #' @export
+#' @importFrom dplyr %>%
 #'
 #' @examples
 #' # Fit the gamma regression models for the mean-variance trend used in the
@@ -89,6 +94,7 @@ fit_gamma_imputation <- function(data, design, id_col = "id") {
 #'
 #' @return
 #' @export
+#' @importFrom dplyr %>%
 #'
 #' @examples
 #' # Fit the gamma regression model for the mean-variance trend used for

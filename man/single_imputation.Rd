@@ -2,14 +2,13 @@
 % Please edit documentation in R/imputation.R
 \name{single_imputation}
 \alias{single_imputation}
-\title{Title}
+\title{Single imputation}
 \usage{
 single_imputation(data, design, id_col = "id")
 }
 \arguments{
-\item{data}{a \code{data.frame} to generate the mean-variance trends for. It
-should contain columns with conditions named as the column names in
-\code{design} (presumably with some suffix).}
+\item{data}{a \code{data.frame} to perform the imputation on, missing values should
+be \code{NA}}
 
 \item{design}{a design or model matrix as produced my \code{model.matrix} with
 column names corresponding to the different conditions.}
@@ -18,8 +17,22 @@ column names corresponding to the different conditions.}
 name of the features in data (e.g., peptides, proteins, etc.)}
 }
 \value{
-
+a \code{data.frame} with \code{NA} values replaced by imputed values
 }
 \description{
-Title
+Performs a single imputation run and returns the data with NA values replaced
+by imputed values.
+}
+\examples{
+# Generate a design matrix for the data
+design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+
+# Set correct colnames, this is important for fit_gamma_weights
+colnames(design) <- paste0('ng', c(50, 100))
+
+yeast \%>\%
+# Normalize and log-transform the data
+  prnn('identifier') \%>\%
+# Run the imputation
+  single_imputation(design, 'identifier')
 }
