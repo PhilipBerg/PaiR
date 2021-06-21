@@ -18,8 +18,9 @@ fit_gamma_weights(data, design, id_col = "id")
 should contain columns with conditions named as the column names in
 \code{design} (presumably with some suffix).}
 
-\item{design}{a design or model matrix as produced my \code{model.matrix} with
-column names corresponding to the different conditions.}
+\item{design}{a design or model matrix as produced by
+\verb{\link[stats]\{model.matrix\}} with column names corresponding to the
+different conditions.}
 
 \item{id_col}{a character for the name of the column containing the
 name of the features in data (e.g., peptides, proteins, etc.)}

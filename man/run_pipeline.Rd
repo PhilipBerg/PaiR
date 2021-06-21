@@ -41,7 +41,11 @@ column contains the results produced by \code{\link[pair]{run_limma_and_lfc}}
 }
 \description{
 This function is an efficient wrapper that fits the needed gamma regressions,
-performs multiple imputation and testing with \code{\link[limma]{01.Introduction}}
+performs multiple imputation and testing with \code{\link[limma]{limmaUsersGuide}}.
+It is an effeicite wrapper that generates need inputs for imputation and
+running \code{\link[pair]{run_limma_and_lfc}} with the possibility of using
+\code{\link[multidplyr]{multidplyr-package}} to paralellize the computation.
+It also calls \verb{\link[pair]\{plot_gamma_regression} if \code{plot_trend} is \code{TRUE}.
 }
 \examples{
 # Generate a design matrix for the data

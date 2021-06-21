@@ -18,7 +18,7 @@ after normalization}
 \item{load_info}{logical}
 
 \item{target}{target columns to normalize, supporst
-\code{\link[tidyselect]{tidyselect}} syntax. By default, all numerical
+\code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
 columns will be used in the normalization if not specified.}
 }
 \value{

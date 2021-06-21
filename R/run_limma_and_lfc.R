@@ -2,9 +2,10 @@
 #'
 #' Function to calculate LFC, run limma using \code{\link[limma]{lmFit}}, \code{\link[limma]{contrasts.fit}},
 #' and \code{\link[limma]{eBayes}} with the flag robust = TRUE.
-#' If neither `weights` or `gamma_reg_model` is provided, then `lmFit` will be run
-#' without precision weights. If both are provided, then it will default to
-#' using the `gamma_reg_model` model to produce the weights.
+#' If neither `weights` or `gamma_reg_model` is provided, then
+#' \code{\link[limma]{lmFit}} will be run without precision weights.
+#' If both are provided, then it will default to using the `gamma_reg_model`
+#' model to produce the weights.
 #'
 #' @param data a `data.frame` with the samples and feature ids
 #' @param design a design or model matrix produced by
@@ -12,8 +13,8 @@
 #' @param contrast_matrix a contrast matrix produced by
 #'     \code{\link[limma]{makeContrasts}}
 #' @param gamma_reg_model the regression model produced by
-#'     \code{\link[pair]{fit_gamma_weights}} or any `glm` with `formula`
-#'     `sd ~ mean`
+#'     `fit_gamma_weights` (see \code{\link[pair]{Mean-Variance_Gamma_Regressions}}) or any
+#'      `glm` with `formula` `sd ~ mean`
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
 #'

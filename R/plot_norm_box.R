@@ -7,7 +7,6 @@ utils::globalVariables(c("where", "value", "name", "method", "med", "condition")
 #'     boxplots should have their median aligned close to the global trend line.
 #'
 #' @inheritParams tmm
-#' @inheritParams prnn
 #' @param data
 #' @param id_col
 #' @param trim_M

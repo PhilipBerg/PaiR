@@ -23,8 +23,8 @@ run_limma_and_lfc(
 \code{\link[limma]{makeContrasts}}}
 
 \item{gamma_reg_model}{the regression model produced by
-\code{\link[pair]{fit_gamma_weights}} or any \code{glm} with \code{formula}
-\code{sd ~ mean}}
+\code{fit_gamma_weights} (see \code{\link[pair]{Mean-Variance_Gamma_Regressions}}) or any
+\code{glm} with \code{formula} \code{sd ~ mean}}
 
 \item{weights}{a matrix of precision weights}
 
@@ -37,7 +37,8 @@ name of the features in data (e.g., peptides, proteins, etc.)}
 \description{
 Function to calculate LFC, run limma using \code{\link[limma]{lmFit}}, \code{\link[limma]{contrasts.fit}},
 and \code{\link[limma]{eBayes}} with the flag robust = TRUE.
-If neither \code{weights} or \code{gamma_reg_model} is provided, then \code{lmFit} will be run
-without precision weights. If both are provided, then it will default to
-using the \code{gamma_reg_model} model to produce the weights.
+If neither \code{weights} or \code{gamma_reg_model} is provided, then
+\code{\link[limma]{lmFit}} will be run without precision weights.
+If both are provided, then it will default to using the \code{gamma_reg_model}
+model to produce the weights.
 }

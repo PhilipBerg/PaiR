@@ -15,8 +15,9 @@ utils::globalVariables(c(".", "sd", "model"))
 #' @param data a `data.frame` to generate the mean-variance trends for. It
 #'     should contain columns with conditions named as the column names in
 #'     `design` (presumably with some suffix).
-#' @param design a design or model matrix as produced my `model.matrix` with
-#'     column names corresponding to the different conditions.
+#' @param design a design or model matrix as produced by
+#'  `\link[stats]{model.matrix}` with column names corresponding to the
+#'  different conditions.
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
 #'

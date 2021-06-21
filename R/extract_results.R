@@ -18,8 +18,8 @@ utils::globalVariables(
 #' @param alpha The alpha value to decide when a feature is significant
 #' @param abs_lfc If a LFC cut-off values should be used in addition to the
 #'     alpha value
-#' @param pcor A p-value correction method; has to one from
-#'     \code{\link[stats]{p.adjust.methods}}
+#' @param pcor A p-value correction method, has to be one from
+#'     \code{\link[stats]{p.adjust}}
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
 #'

@@ -15,8 +15,21 @@ plot_gamma_regression(data, design, id_col = "id")
 name of the features in data (e.g., peptides, proteins, etc.)}
 }
 \value{
-a \code{ggplot2} object with the
+a \code{ggplot} object with the mean-variance trend used for the precision
+weights on the left side, and the trend lines used for imputation on the
+right side.
 }
 \description{
 Function for plotting the mean-variance gamma regression
+}
+\examples{
+# Produce a design matrix
+design <- model.matrix(~0+factor(rep(1:2, each = 3)))
+colnames(design) <- paste0('ng', c(50, 100))
+
+# Normalize and log transform the data
+yeast <- prnn(yeast, 'identifier')
+
+# Generate the plots
+plot_gamma_regression(yeast, design, 'identifier')
 }

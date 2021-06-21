@@ -24,8 +24,8 @@ extract_results(
 \item{abs_lfc}{If a LFC cut-off values should be used in addition to the
 alpha value}
 
-\item{pcor}{A p-value correction method; has to one from
-\code{\link[stats]{p.adjust.methods}}}
+\item{pcor}{A p-value correction method, has to be one from
+\code{\link[stats]{p.adjust}}}
 
 \item{id_col}{a character for the name of the column containing the
 name of the features in data (e.g., peptides, proteins, etc.)}

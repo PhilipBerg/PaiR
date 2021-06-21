@@ -4,7 +4,11 @@ utils::globalVariables(
 #' Run multiple imputation and limma
 #'
 #' This function is an efficient wrapper that fits the needed gamma regressions,
-#' performs multiple imputation and testing with \code{\link[limma]{01.Introduction}}
+#' performs multiple imputation and testing with \code{\link[limma]{limmaUsersGuide}}.
+#' It is an effeicite wrapper that generates need inputs for imputation and
+#' running \code{\link[pair]{run_limma_and_lfc}} with the possibility of using
+#' \code{\link[multidplyr]{multidplyr-package}} to paralellize the computation.
+#' It also calls `\link[pair]{plot_gamma_regression` if `plot_trend` is `TRUE`.
 #'
 #'
 #' @param data The data to run the pipeline on

@@ -6,7 +6,9 @@
 #' @inheritParams Mean-Variance_Gamma_Regressions
 #' @param data a `data.frame` to perform the imputation on, missing values should
 #' be `NA`
-#' @param design
+#' @param design a design or model matrix as produced by
+#'  `\link[stats]{model.matrix}` with column names corresponding to the
+#'  different conditions.
 #' @param id_col a character for the name of the column containing the
 #'     name of the features in data (e.g., peptides, proteins, etc.)
 #'

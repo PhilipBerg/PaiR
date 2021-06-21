@@ -17,9 +17,6 @@ plot_norm_box(
 \arguments{
 \item{data}{data.frame containing the data to normalize}
 
-\item{id_col}{a character for the name of the column containing the
-name of the features in data (e.g., peptides, proteins, etc.)}
-
 \item{trim_M}{percent of fold-change values to trim}
 
 \item{trim_A}{percent of means to trim}

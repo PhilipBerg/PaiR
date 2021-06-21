@@ -10,8 +10,9 @@ single_imputation(data, design, id_col = "id")
 \item{data}{a \code{data.frame} to perform the imputation on, missing values should
 be \code{NA}}
 
-\item{design}{a design or model matrix as produced my \code{model.matrix} with
-column names corresponding to the different conditions.}
+\item{design}{a design or model matrix as produced by
+\verb{\link[stats]\{model.matrix\}} with column names corresponding to the
+different conditions.}
 
 \item{id_col}{a character for the name of the column containing the
 name of the features in data (e.g., peptides, proteins, etc.)}

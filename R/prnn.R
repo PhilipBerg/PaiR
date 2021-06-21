@@ -8,7 +8,7 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @param log boolean variable indicating if the data should be log transformed
 #'     after normalization
 #' @param target target columns to normalize, supporst
-#'     \code{\link[tidyselect]{tidyselect}} syntax. By default, all numerical
+#'     \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
 #'     columns will be used in the normalization if not specified.
 #'
 #' @return data.frame
