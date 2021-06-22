@@ -27,7 +27,7 @@ For each individual imputation, it assumes that the mean can be correctly estima
 `pair` is still under development but will be released to CRAN shortly.
 
 ``` r
-install.packages("pair")
+#install.packages("pair")
 ```
 
 In the meantime, you can download `pair` from github.
