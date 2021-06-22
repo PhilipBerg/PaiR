@@ -34,11 +34,10 @@ In the meantime, you can download `pair` from github.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("PhilipBerg/pair")
+devtools::install_github("PhilipBerg/pair", build_vignettes = TRUE)
 ```
 ## Example
 For examples see the vignette.
 ``` r
-library(pair)
-
+vignette('pair-tutorial')
 ```

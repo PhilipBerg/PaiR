@@ -25,14 +25,14 @@ the variance given the mean.
 `pair` is still under development but will be released to CRAN shortly.
 
 ``` r
-install.packages("pair")
+#install.packages("pair")
 ```
 
 In the meantime, you can download `pair` from github.
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("PhilipBerg/pair")
+devtools::install_github("PhilipBerg/pair", build_vignettes = TRUE)
 ```
 
 ## Example
@@ -40,5 +40,5 @@ devtools::install_github("PhilipBerg/pair")
 For examples see the vignette.
 
 ``` r
-library(pair)
+vignette('pair-tutorial')
 ```
