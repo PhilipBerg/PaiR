@@ -4,14 +4,14 @@
 #' by imputed values.
 #'
 #' @param data a `data.frame` to perform the imputation on, missing values should
-#' be `NA`
+#' be `NA`.
 #' @param design a design or model matrix as produced by
-#'  `\link[stats]{model.matrix}` with column names corresponding to the
+#'  \code{\link[stats]{model.matrix}} with column names corresponding to the
 #'  different conditions.
 #' @param id_col a character for the name of the column containing the
-#'     name of the features in data (e.g., peptides, proteins, etc.)
+#'     name of the features in data (e.g., peptides, proteins, etc.).
 #'
-#' @return a `data.frame` with `NA` values replaced by imputed values
+#' @return a `data.frame` with `NA` values replaced by imputed values.
 #' @export
 #'
 #' @examples
@@ -23,7 +23,7 @@
 #'
 #' yeast %>%
 #'   # Normalize and log-transform the data
-#'   prnn("identifier") %>%
+#'   psrn("identifier") %>%
 #'   # Run the imputation
 #'   single_imputation(design, "identifier")
 single_imputation <- function(data,

@@ -43,8 +43,9 @@ corresponds to the global median across all samples.
 }
 \description{
 This function can be used to produce a visual aid to for selection
-normalization method. Ideally, after the data is normalized all
-boxplots should have their median aligned close to the global trend line.
+normalization method. Currently \code{\link[pair]{tmm}} and \code{\link[pair]{psrn}}
+are used. Ideally, after the data is normalized all the boxplots should have
+their median aligned close to the global trend line.
 }
 \examples{
 plot_norm_box(yeast, "identifier")

@@ -1,6 +1,9 @@
 utils::globalVariables(c(".", "sd", "model"))
 #' Function for plotting the mean-variance gamma regression
 #'
+#' Generates a scatter plot with the gamma regressions of the mean-variance
+#' trends for the precision weights and imputation.
+#'
 #'
 #' @param data The data to use for producing the plots
 #' @param design A design matrix as produced by \code{\link[stats]{model.matrix}}.
@@ -20,7 +23,7 @@ utils::globalVariables(c(".", "sd", "model"))
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log transform the data
-#' yeast <- prnn(yeast, "identifier")
+#' yeast <- psrn(yeast, "identifier")
 #'
 #' # Generate the plots
 #' plot_gamma_regression(yeast, design, "identifier")

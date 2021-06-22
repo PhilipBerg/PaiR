@@ -10,25 +10,29 @@ extract_results(
   alpha = 0.05,
   abs_lfc = 1,
   pcor = stats::p.adjust.methods,
-  id_col = "id"
+  id_col = "id",
+  null_hyp = 0.5
 )
 }
 \arguments{
 \item{data}{The data used to generate the results when calling
-\code{\link[pair]{run_pipeline}}}
+\code{\link[pair]{run_pipeline}}.}
 
-\item{results}{The output from \code{\link[pair]{run_pipeline}}}
+\item{results}{The output from \code{\link[pair]{run_pipeline}}.}
 
-\item{alpha}{The alpha value to decide when a feature is significant}
+\item{alpha}{The alpha value to decide when a feature is significant.}
 
 \item{abs_lfc}{If a LFC cut-off values should be used in addition to the
-alpha value}
+alpha value.}
 
 \item{pcor}{A p-value correction method, has to be one from
-\code{\link[stats]{p.adjust}}}
+\code{\link[stats]{p.adjust}}.}
 
 \item{id_col}{a character for the name of the column containing the
-name of the features in data (e.g., peptides, proteins, etc.)}
+name of the features in data (e.g., peptides, proteins, etc.).}
+
+\item{null_hyp}{The value for the null hypothesis of the binomial-test.
+Needs to be between 0 and 1.}
 }
 \value{
 A tibble with a summary of the results. From all imputations it
@@ -38,7 +42,13 @@ comparison, that indicates what comparison the results come from and a
 boolean column, imputed, indicating if there was any imputed value or not.
 }
 \description{
-Extract the results from running the multiple imputations
+Does p-value correction and then binomial testing on a given decision.
+Could be a hybrid decision on both p-value and LFC. Assumes that the decision
+for each imputation and feature can be considered a bernoulli trial. Therefore,
+the sum of decisions from all imputations has a binomial distribution. It
+therefore implements a right-tailed binomial testing with default null
+hypothesis p = 0.5. It uses the right tail because significant features are
+expected to have a larger p then the null hypothesis.
 }
 \examples{
 # Generate a design matrix for the data
@@ -54,7 +64,7 @@ contrast <- limma::makeContrasts(
 )
 
 # Normalize and log-transform the data
-yeast <- prnn(yeast, "identifier")
+yeast <- psrn(yeast, "identifier")
 \dontrun{
 results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 extract_results(yeast, results, .05, 1, "fdr", "identifier")

@@ -9,19 +9,26 @@ utils::globalVariables(
 )
 #' Extract the results from running the multiple imputations
 #'
-#'
-#'
+#' Does p-value correction and then binomial testing on a given decision.
+#' Could be a hybrid decision on both p-value and LFC. Assumes that the decision
+#' for each imputation and feature can be considered a bernoulli trial. Therefore,
+#' the sum of decisions from all imputations has a binomial distribution. It
+#' therefore implements a right-tailed binomial testing with default null
+#' hypothesis p = 0.5. It uses the right tail because significant features are
+#' expected to have a larger p then the null hypothesis.
 #'
 #' @param data The data used to generate the results when calling
-#'   \code{\link[pair]{run_pipeline}}
-#' @param results The output from \code{\link[pair]{run_pipeline}}
-#' @param alpha The alpha value to decide when a feature is significant
+#'   \code{\link[pair]{run_pipeline}}.
+#' @param results The output from \code{\link[pair]{run_pipeline}}.
+#' @param alpha The alpha value to decide when a feature is significant.
 #' @param abs_lfc If a LFC cut-off values should be used in addition to the
-#'     alpha value
+#'     alpha value.
 #' @param pcor A p-value correction method, has to be one from
-#'     \code{\link[stats]{p.adjust}}
+#'     \code{\link[stats]{p.adjust}}.
 #' @param id_col a character for the name of the column containing the
-#'     name of the features in data (e.g., peptides, proteins, etc.)
+#'     name of the features in data (e.g., peptides, proteins, etc.).
+#' @param null_hyp The value for the null hypothesis of the binomial-test.
+#'     Needs to be between 0 and 1.
 #'
 #' @return A tibble with a summary of the results. From all imputations it
 #'     calculates the binomial p-value, the median: LFC, p-value (from all testing),
@@ -46,17 +53,18 @@ utils::globalVariables(
 #' )
 #'
 #' # Normalize and log-transform the data
-#' yeast <- prnn(yeast, "identifier")
+#' yeast <- psrn(yeast, "identifier")
 #' \dontrun{
 #' results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 #' extract_results(yeast, results, .05, 1, "fdr", "identifier")
 #' }
 extract_results <- function(data,
                             results,
-                            alpha = .05,
+                            alpha = 0.05,
                             abs_lfc = 1,
                             pcor = stats::p.adjust.methods,
-                            id_col = "id") {
+                            id_col = "id",
+                            null_hyp = 0.5) {
   pcor <- match.arg(pcor)
   # Get the number of imputations ran
   imputations <- nrow(results)
@@ -94,7 +102,7 @@ extract_results <- function(data,
       binom_p_value = stats::binom.test(
         x = sum(p_val & lfc),
         n = imputations,
-        p = 0.5,
+        p = null_hyp,
         "greater"
       )$p.value,
       .groups = "drop"

@@ -1,9 +1,9 @@
 utils::globalVariables(c("significant", "median_lfc"))
-#' Generate a MA-plot of the analysis
+#' Generate a MA-plot of the analysis.
 #'
 #' @param hits a `tibble` produced by \code{\link[pair]{extract_results}}
 #'
-#' @return a `ggplot2` of the distribution of the hits
+#' @return a `ggplot2` of the distribution of the hits.
 #' @export
 #'
 #' @import utils
@@ -22,8 +22,9 @@ utils::globalVariables(c("significant", "median_lfc"))
 #' )
 #'
 #' # Normalize and log-transform the data
-#' yeast <- prnn(yeast, "identifier")
+#' yeast <- psrn(yeast, "identifier")
 #' \dontrun{
+#'
 #' results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 #' imputation_summary <- extract_results(yeast, results, .05, 1, "fdr", "identifier")
 #' plot_ma(imputation_summary)

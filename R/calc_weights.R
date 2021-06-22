@@ -1,11 +1,9 @@
 #' Calculate Precision Weights From Gamma Regression
 #'
-#' \code{calc_weights} returns a data frame with all quantitative values
-#' replaced by their corresponding precision weights estimated from the gamma
-#' regression.
+#' Calculates the precision weights for each measurement.
 #'
 #' \code{calc_weights} takes as input a data frame and a `glm` object produced
-#' by `fit_gamma_regressions` or `fit_gamma_weights`,
+#' by e.g., `fit_gamma_regressions` or `fit_gamma_weights`,
 #' see \code{\link[pair]{Mean-Variance_Gamma_Regressions}} for details.
 #' For all numeric columns, it predicts the standard deviation using the gamma
 #' regression. It then squares and takes the reciprocal of each value to generate the
@@ -20,7 +18,7 @@
 #'
 #'
 #' @return The same `data.frame` but with all quantitative values replaced by
-#'  their precision weights
+#'  their precision weights.
 #'
 #' @export
 #'
@@ -32,7 +30,7 @@
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log-transform the data
-#' yeast <- prnn(yeast, "identifier")
+#' yeast <- psrn(yeast, "identifier")
 #'
 #' # Fit the gamma regression model for the mean-variance trend
 #' gamma_model <- fit_gamma_weights(yeast, design, "identifier")

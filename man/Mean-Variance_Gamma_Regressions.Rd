@@ -19,11 +19,11 @@ should contain columns with conditions named as the column names in
 \code{design} (presumably with some suffix).}
 
 \item{design}{a design or model matrix as produced by
-\verb{\link[stats]\{model.matrix\}} with column names corresponding to the
+\code{\link[stats]{model.matrix}} with column names corresponding to the
 different conditions.}
 
 \item{id_col}{a character for the name of the column containing the
-name of the features in data (e.g., peptides, proteins, etc.)}
+name of the features in data (e.g., peptides, proteins, etc.).}
 }
 \value{
 \code{fit_gamma_imputation} returns a named
@@ -45,7 +45,7 @@ from \code{fit_gamma_weights} in \verb{$weights}.
 the models for imputation in \verb{$imputation} and the weights in \verb{$weights}.
 \code{fit_gamma_imputation} returns a list named according to the different
 conditions and \code{fit_gamma_weights} returns a \code{glm} object containing the
-gamma regression.
+gamma regression for the mean-variance trend.
 }
 \section{Functions}{
 \itemize{
@@ -72,9 +72,9 @@ design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 colnames(design) <- paste0("ng", c(50, 100))
 
 # Normalize and log-transform the data
-yeast <- prnn(yeast, "identifier")
+yeast <- psrn(yeast, "identifier")
 
-# Fit all gamma regression models for the mean-variance trend
+# Fit all gamma regression models for the mean-variance trends
 all_gamma_models <- fit_gamma_regressions(yeast, design, "identifier")
 
 # Fit the gamma regression models for the mean-variance trend used in the

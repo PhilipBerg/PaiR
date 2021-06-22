@@ -7,19 +7,18 @@ utils::globalVariables(c(".", "sd", "model"))
 #'    the models for imputation in `$imputation` and the weights in `$weights`.
 #'    `fit_gamma_imputation` returns a list named according to the different
 #'    conditions and `fit_gamma_weights` returns a `glm` object containing the
-#'    gamma regression.
+#'    gamma regression for the mean-variance trend.
 #'
 #' @import utils
-#'
 #'
 #' @param data a `data.frame` to generate the mean-variance trends for. It
 #'     should contain columns with conditions named as the column names in
 #'     `design` (presumably with some suffix).
 #' @param design a design or model matrix as produced by
-#'  `\link[stats]{model.matrix}` with column names corresponding to the
+#'  \code{\link[stats]{model.matrix}} with column names corresponding to the
 #'  different conditions.
 #' @param id_col a character for the name of the column containing the
-#'     name of the features in data (e.g., peptides, proteins, etc.)
+#'     name of the features in data (e.g., peptides, proteins, etc.).
 #'
 #' @return `fit_gamma_imputation` returns a named
 #'     list where the names corresponds to the conditions. Each index contains
@@ -44,9 +43,9 @@ NULL
 #' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log-transform the data
-#' yeast <- prnn(yeast, "identifier")
+#' yeast <- psrn(yeast, "identifier")
 #'
-#' # Fit all gamma regression models for the mean-variance trend
+#' # Fit all gamma regression models for the mean-variance trends
 #' all_gamma_models <- fit_gamma_regressions(yeast, design, "identifier")
 fit_gamma_regressions <- function(data, design, id_col = "id") {
   gamma_reg_imp <- data %>%

@@ -14,22 +14,22 @@ run_limma_and_lfc(
 )
 }
 \arguments{
-\item{data}{a \code{data.frame} with the samples and feature ids}
+\item{data}{a \code{data.frame} with the samples and feature ids.}
 
 \item{design}{a design or model matrix produced by
-\code{\link[stats]{model.matrix}}}
+\code{\link[stats]{model.matrix}}.}
 
 \item{contrast_matrix}{a contrast matrix produced by
-\code{\link[limma]{makeContrasts}}}
+\code{\link[limma]{makeContrasts}}.}
 
 \item{gamma_reg_model}{the regression model produced by
 \code{fit_gamma_weights} (see \code{\link[pair]{Mean-Variance_Gamma_Regressions}}) or any
-\code{glm} with \code{formula} \code{sd ~ mean}}
+\code{glm} with \code{formula} \code{sd ~ mean}.}
 
 \item{id_col}{a character for the name of the column containing the
-name of the features in data (e.g., peptides, proteins, etc.)}
+name of the features in data (e.g., peptides, proteins, etc.).}
 
-\item{weights}{a matrix of precision weights}
+\item{weights}{a matrix of precision weights.}
 }
 \value{
 a \code{tibble} with the id_col, then one p_val_* and lfc_* for each
@@ -57,12 +57,12 @@ contrast <- limma::makeContrasts(
 )
 
 # Normalize and log-transform the data
-yeast <- prnn(yeast, "identifier")
+yeast <- psrn(yeast, "identifier")
 
 # Fit the gamma regressions
 gamma_reg_model <- fit_gamma_weights(yeast, design, "identifier")
 
-# Examplify on the non-missing data
+# Exemplify on the non-missing data
 yeast <- tidyr::drop_na(yeast)
 
 results <- run_limma_and_lfc(

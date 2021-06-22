@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_ma.R
 \name{plot_ma}
 \alias{plot_ma}
-\title{Generate a MA-plot of the analysis}
+\title{Generate a MA-plot of the analysis.}
 \usage{
 plot_ma(hits)
 }
@@ -10,10 +10,10 @@ plot_ma(hits)
 \item{hits}{a \code{tibble} produced by \code{\link[pair]{extract_results}}}
 }
 \value{
-a \code{ggplot2} of the distribution of the hits
+a \code{ggplot2} of the distribution of the hits.
 }
 \description{
-Generate a MA-plot of the analysis
+Generate a MA-plot of the analysis.
 }
 \examples{
 # Generate a design matrix for the data
@@ -29,8 +29,9 @@ contrast <- limma::makeContrasts(
 )
 
 # Normalize and log-transform the data
-yeast <- prnn(yeast, "identifier")
+yeast <- psrn(yeast, "identifier")
 \dontrun{
+
 results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 imputation_summary <- extract_results(yeast, results, .05, 1, "fdr", "identifier")
 plot_ma(imputation_summary)

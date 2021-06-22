@@ -15,7 +15,8 @@ run_pipeline(
 )
 }
 \arguments{
-\item{data}{The data to run the pipeline on}
+\item{data}{The data to run the pipeline on, missing values should have NA
+values.}
 
 \item{design}{A design matrix as produced by \code{\link[stats]{model.matrix}}.}
 
@@ -29,7 +30,7 @@ Any value >1 will run the pipeline with parallel computing using the
 \code{\link[multidplyr]{multidplyr-package}}.}
 
 \item{id_col}{A character for the name of the column containing the
-name of the features in data (e.g., peptides, proteins, etc.)}
+name of the features in data (e.g., peptides, proteins, etc.).}
 
 \item{plot_trend}{Should the mean-variance trend with the gamma regression be
 plotted?}
@@ -37,15 +38,15 @@ plotted?}
 \value{
 A tibble with each imputation as a row. The first column contains the
 imputation number, the second contains the imputed data, and the last
-column contains the results produced by \code{\link[pair]{run_limma_and_lfc}}
+column contains the results produced by \code{\link[pair]{run_limma_and_lfc}}.
 }
 \description{
 This function is an efficient wrapper that fits the needed gamma regressions,
-performs multiple imputation and testing with \code{\link[limma]{limmaUsersGuide}}.
-It is an effeicite wrapper that generates need inputs for imputation and
+performs multiple imputation and testing with limma (see \code{\link[limma]{limmaUsersGuide}}).
+It is an efficient wrapper that generates need inputs for imputation and
 running \code{\link[pair]{run_limma_and_lfc}} with the possibility of using
 \code{\link[multidplyr]{multidplyr-package}} to paralellize the computation.
-It also calls \verb{\link[pair]\{plot_gamma_regression} if \code{plot_trend} is \code{TRUE}.
+It also calls produces the mean-variance trends if \code{plot_trend} is \code{TRUE}.
 }
 \examples{
 # Generate a design matrix for the data
@@ -61,7 +62,7 @@ contrast <- limma::makeContrasts(
 )
 
 # Normalize and log-transform the data
-yeast <- prnn(yeast, "identifier")
+yeast <- psrn(yeast, "identifier")
 \dontrun{
 results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 }

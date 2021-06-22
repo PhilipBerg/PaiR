@@ -3,8 +3,9 @@ utils::globalVariables(c("where", "value", "name", "method", "med", "condition")
 #'     values.
 #'
 #' This function can be used to produce a visual aid to for selection
-#'     normalization method. Ideally, after the data is normalized all
-#'     boxplots should have their median aligned close to the global trend line.
+#' normalization method. Currently \code{\link[pair]{tmm}} and \code{\link[pair]{psrn}}
+#' are used. Ideally, after the data is normalized all the boxplots should have
+#' their median aligned close to the global trend line.
 #'
 #' @param data data.frame containing the data to normalize
 #' @param id_col a character for the name of the column containing the
@@ -40,8 +41,8 @@ plot_norm_box <- function(data,
   norm_target <- check_target(norm_target)
   plot_target <- rlang::enquo(plot_target)
   plot_target <- check_target(plot_target)
-  prnn <- data %>%
-    prnn(
+  psrn <- data %>%
+    psrn(
       id_col = id_col,
       target = !!norm_target
     ) %>%
@@ -62,7 +63,7 @@ plot_norm_box <- function(data,
       dplyr::across(!!plot_target, log2)
     ) %>%
     dplyr::rename_with(~ paste0(., "_raw"), where(is.numeric)) %>%
-    dplyr::left_join(prnn, by = id_col) %>%
+    dplyr::left_join(psrn, by = id_col) %>%
     dplyr::left_join(tmm, by = id_col) %>%
     tidyr::pivot_longer(where(is.numeric)) %>%
     tidyr::extract(name, c("condition", "method"), "^(.*)_(.*)$") %>%
