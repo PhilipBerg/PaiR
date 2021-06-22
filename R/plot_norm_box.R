@@ -6,14 +6,19 @@ utils::globalVariables(c("where", "value", "name", "method", "med", "condition")
 #'     normalization method. Ideally, after the data is normalized all
 #'     boxplots should have their median aligned close to the global trend line.
 #'
-#' @inheritParams tmm
-#' @param data
-#' @param id_col
-#' @param trim_M
-#' @param trim_A
-#' @param target
+#' @param data data.frame containing the data to normalize
+#' @param id_col a character for the name of the column containing the
+#'      name of the features in data (e.g., peptides, proteins, etc.)
+#' @param trim_M percent of fold-change values to trim
+#' @param trim_A percent of means to trim
 #' @param reference_sample Specify a reference sample to normalize to in the
 #'     \code{\link[pair]{tmm}} method
+#' @param norm_target target columns to normalize, supports
+#'     \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
+#'     columns will be used in the normalization if not specified.
+#' @param plot_target target columns to plot, supports
+#'     \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
+#'     columns are plotted.
 #'
 #' @return ggplot with samples on the x-axis and observed values on the y-axis,
 #'     different colors correspond to the raw or normalized data. Lines
@@ -21,28 +26,40 @@ utils::globalVariables(c("where", "value", "name", "method", "med", "condition")
 #' @export
 #'
 #' @examples
+#' plot_norm_box(yeast, 'identifier')
+#' # Plot only ng50 samples
+#' plot_norm_box(yeast, 'identifier', plot_target = contains('ng50'))
 plot_norm_box <- function(data,
                           id_col = "id",
                           trim_M = .3,
                           trim_A = .05,
-                          target = NULL,
+                          norm_target = NULL,
+                          plot_target = NULL,
                           reference_sample = NULL) {
+  norm_target <- rlang::enquo(norm_target)
+  norm_target <- check_target(norm_target)
+  plot_target <- rlang::enquo(plot_target)
+  plot_target <- check_target(plot_target)
   prnn <- data %>%
-    prnn(id_col = id_col, load_info = F) %>%
+    prnn(
+      id_col = id_col,
+      target = !!norm_target
+    ) %>%
+    dplyr::select(id_col, !!plot_target) %>%
     dplyr::rename_with(~ paste0(., "_prnn"), where(is.numeric))
   tmm <- data %>%
     tmm(
-      id_col = id_col,
-      load_info = F,
       trim_M = trim_M,
       trim_A = trim_A,
-      target = target,
+      target = !!norm_target,
       reference_sample = reference_sample
     ) %>%
+    dplyr::select(id_col, !!plot_target) %>%
     dplyr::rename_with(~ paste0(., "_tmm"), where(is.numeric))
   data %>%
+    dplyr::select(id_col, !!plot_target) %>%
     dplyr::mutate(
-      dplyr::across(where(is.numeric), log2)
+      dplyr::across(!!plot_target, log2)
     ) %>%
     dplyr::rename_with(~ paste0(., "_raw"), where(is.numeric)) %>%
     dplyr::left_join(prnn, by = id_col) %>%

@@ -6,14 +6,18 @@ utils::globalVariables(c("load_size", "lfc", "A", "w"))
 #' @param trim_A percent of means to trim
 #' @param log Return log2 transformed values?
 #' @param load_info Return loading info?
-#' @param target Specify a subset of columns to normalize
-#' @param reference_sample  Specify a reference sample to normalize to
+#' @param target target columns to normalize, supports
+#'     \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
+#'     columns will be used in the normalization if not specified.
+#' @param reference_sample  Specify a reference sample to normalize to, if not
+#'     provided, the sample with the lowest coefficient of variation will be used
 #'
 #' @return data frame with normalized values
 #' @export
 #' @import utils
 #'
 #' @examples
+#' tmm(yeast)
 tmm <- function(data,
                 trim_M = .3,
                 trim_A = .05,
@@ -24,18 +28,21 @@ tmm <- function(data,
   target <- rlang::enquo(target)
   target <- check_target(target)
   data_filtered <- data %>%
-    tidyr::drop_na(!!target)
+    tidyr::drop_na(!!target, reference_sample)
   if (is.null(reference_sample)) {
     reference_sample <- calc_cv(data_filtered, target)
     reference_sample <-
       names(reference_sample)[reference_sample == min(reference_sample)]
   }
-  loading_sizes <- calc_loading_size(data_filtered, target)
+  loading_sizes <- calc_loading_size(data_filtered, target) %>%
+    dplyr::bind_rows(
+      calc_loading_size(data_filtered, reference_sample)
+    )
   reference_loading_size <-
     loading_sizes$load_size[loading_sizes$sample == reference_sample]
   reference_sample <- rlang::sym(reference_sample)
   scaling_factors <- data_filtered %>%
-    dplyr::select(!!target) %>%
+    dplyr::select(!!target, reference_sample) %>%
     tidyr::pivot_longer(-!!reference_sample, names_to = "sample") %>%
     dplyr::left_join(loading_sizes, by = "sample") %>%
     dplyr::mutate(

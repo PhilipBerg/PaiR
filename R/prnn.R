@@ -7,7 +7,7 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @param load_info logical
 #' @param log boolean variable indicating if the data should be log transformed
 #'     after normalization
-#' @param target target columns to normalize, supporst
+#' @param target target columns to normalize, supports
 #'     \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
 #'     columns will be used in the normalization if not specified.
 #'
@@ -17,6 +17,7 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @import utils
 #'
 #' @examples
+#' yeast_prnn <- prnn(yeast, 'identifier')
 prnn <- function(data,
                  id_col = "id",
                  log = TRUE,

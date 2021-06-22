@@ -20,18 +20,47 @@
 #'
 #' @param weights a matrix of precision weights
 #'
-#' @return
+#' @return a `tibble` with the id_col, then one p_val_* and lfc_* for each
+#'     comparison (*) in the contrast matrix
 #' @export
 #'
 #' @importFrom rlang :=
 #'
 #' @examples
+#' # Generate a design matrix for the data
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+#'
+#' # Set correct colnames, this is important for fit_gamma_*
+#' colnames(design) <- paste0("ng", c(50, 100))
+#'
+#' # Generate the contrast matrix
+#' contrast <- limma::makeContrasts(
+#' contrasts = 'ng100-ng50',
+#' levels = design
+#' )
+#'
+#' # Normalize and log-transform the data
+#' yeast <- prnn(yeast, "identifier")
+#'
+#' # Fit the gamma regressions
+#' gamma_reg_model <- fit_gamma_weights(yeast, design, 'identifier')
+#'
+#' # Examplify on the non-missing data
+#' yeast <- tidyr::drop_na(yeast)
+#'
+#' results <- run_limma_and_lfc(
+#' yeast,
+#' design,
+#' contrast,
+#' gamma_reg_model,
+#' 'identifier'
+#' )
 run_limma_and_lfc <- function(data,
                               design,
                               contrast_matrix,
                               gamma_reg_model = NULL,
-                              weights = NULL,
-                              id_col = "id") {
+                              id_col = "id",
+                              weights = NULL) {
   row_names <- data[[id_col]]
   condi <- design %>%
     get_conditions()

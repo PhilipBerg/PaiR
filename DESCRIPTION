@@ -37,7 +37,8 @@ Imports:
     tibble,
     tidyr,
     tidyselect,
-    glue
+    glue,
+    statmod
 URL: https://github.com/PhilipBerg/pair
 BugReports: https://github.com/PhilipBerg/pair/issues
 Depends: 

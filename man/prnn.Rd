@@ -17,7 +17,7 @@ after normalization}
 
 \item{load_info}{logical}
 
-\item{target}{target columns to normalize, supporst
+\item{target}{target columns to normalize, supports
 \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
 columns will be used in the normalization if not specified.}
 }
@@ -26,4 +26,7 @@ data.frame
 }
 \description{
 Normalize data to a pseudo-reference
+}
+\examples{
+yeast_prnn <- prnn(yeast, 'identifier')
 }

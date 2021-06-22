@@ -3,7 +3,6 @@
 #' Performs a single imputation run and returns the data with NA values replaced
 #' by imputed values.
 #'
-#' @inheritParams Mean-Variance_Gamma_Regressions
 #' @param data a `data.frame` to perform the imputation on, missing values should
 #' be `NA`
 #' @param design a design or model matrix as produced by

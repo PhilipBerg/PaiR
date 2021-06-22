@@ -25,13 +25,19 @@ tmm(
 
 \item{load_info}{Return loading info?}
 
-\item{target}{Specify a subset of columns to normalize}
+\item{target}{target columns to normalize, supports
+\code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
+columns will be used in the normalization if not specified.}
 
-\item{reference_sample}{Specify a reference sample to normalize to}
+\item{reference_sample}{Specify a reference sample to normalize to, if not
+provided, the sample with the lowest coefficient of variation will be used}
 }
 \value{
 data frame with normalized values
 }
 \description{
 Normalization by Trimmed m Means
+}
+\examples{
+tmm(yeast)
 }

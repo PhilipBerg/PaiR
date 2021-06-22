@@ -10,18 +10,28 @@ plot_norm_box(
   id_col = "id",
   trim_M = 0.3,
   trim_A = 0.05,
-  target = NULL,
+  norm_target = NULL,
+  plot_target = NULL,
   reference_sample = NULL
 )
 }
 \arguments{
 \item{data}{data.frame containing the data to normalize}
 
+\item{id_col}{a character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.)}
+
 \item{trim_M}{percent of fold-change values to trim}
 
 \item{trim_A}{percent of means to trim}
 
-\item{target}{Specify a subset of columns to normalize}
+\item{norm_target}{target columns to normalize, supports
+\code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
+columns will be used in the normalization if not specified.}
+
+\item{plot_target}{target columns to plot, supports
+\code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
+columns are plotted.}
 
 \item{reference_sample}{Specify a reference sample to normalize to in the
 \code{\link[pair]{tmm}} method}
@@ -35,4 +45,9 @@ corresponds to the global median across all samples.
 This function can be used to produce a visual aid to for selection
 normalization method. Ideally, after the data is normalized all
 boxplots should have their median aligned close to the global trend line.
+}
+\examples{
+plot_norm_box(yeast, 'identifier')
+# Plot only ng50 samples
+plot_norm_box(yeast, 'identifier', plot_target = contains('ng50'))
 }
