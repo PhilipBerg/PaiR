@@ -30,10 +30,10 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @references
 #' \insertAllCited{}
 psrn <- function(data,
-                id_col = "id",
-                log = TRUE,
-                load_info = FALSE,
-                target = NULL) {
+                 id_col = "id",
+                 log = TRUE,
+                 load_info = FALSE,
+                 target = NULL) {
   target <- rlang::enquo(target)
   target <- check_target(target)
   data_filtered <- data %>%
@@ -138,11 +138,11 @@ tmm <- function(data,
     dplyr::mutate(
       w = (load_size - value) / (load_size * value) +
         (reference_loading_size - !!reference_sample) /
-        (reference_loading_size * !!reference_sample),
+          (reference_loading_size * !!reference_sample),
       lfc = log2((value / load_size) /
-                   (!!reference_sample / reference_loading_size)),
+        (!!reference_sample / reference_loading_size)),
       A = .5 * log2((value / load_size) *
-                      (!!reference_sample / reference_loading_size))
+        (!!reference_sample / reference_loading_size))
     ) %>%
     dplyr::group_by(sample) %>%
     dplyr::filter(
