@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# pair
+# pair: Proteomics analysis in R
 
 <!-- badges: start -->
 <!-- badges: end -->

@@ -13,7 +13,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# pair
+# pair: Proteomics analysis in R
 
 <!-- badges: start -->
 <!-- badges: end -->
