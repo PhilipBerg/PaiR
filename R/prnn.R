@@ -32,7 +32,7 @@ prnn <- function(data,
     tidyr::pivot_longer(!!target) %>%
     dplyr::group_by(.data[[id_col]]) %>%
     dplyr::summarise(
-      ref = prod(value^(1 / dplyr::n()))
+      ref = prod(value)^(1 / dplyr::n())
     )
   scaling_factors <- data_filtered %>%
     tidyr::pivot_longer(!!target, names_to = "sample") %>%

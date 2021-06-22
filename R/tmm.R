@@ -37,7 +37,8 @@ tmm <- function(data,
   loading_sizes <- calc_loading_size(data_filtered, target) %>%
     dplyr::bind_rows(
       calc_loading_size(data_filtered, reference_sample)
-    )
+    ) %>%
+    dplyr::distinct()
   reference_loading_size <-
     loading_sizes$load_size[loading_sizes$sample == reference_sample]
   reference_sample <- rlang::sym(reference_sample)

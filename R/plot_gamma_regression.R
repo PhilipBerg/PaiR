@@ -26,16 +26,9 @@ utils::globalVariables(c(".", "sd", "model"))
 #' plot_gamma_regression(yeast, design, "identifier")
 plot_gamma_regression <- function(data, design, id_col = "id") {
   precision_plot <- data %>%
-    prep_data_for_gamma_weight_regression(design, id_col) %>%
-    tidyr::drop_na() %>%
-    plot_mean_sd_trend() +
-    ggplot2::ggtitle("For precision weights")
+    plot_gamma_precision(design, id_col)
   imputation_plot <- data %>%
-    prep_data_for_gamma_imputation_regression(design, id_col) %>%
-    tidyr::drop_na() %>%
-    plot_mean_sd_trend() +
-    ggplot2::facet_wrap(name ~ .) +
-    ggplot2::ggtitle("For imputation")
+    plot_gamma_imputation()
   plots <- cowplot::plot_grid(precision_plot, imputation_plot)
   title <- cowplot::ggdraw() +
     cowplot::draw_label("Mean-Variance trends", fontface = "bold")
@@ -60,4 +53,21 @@ plot_mean_sd_trend <- function(data) {
     ggplot2::theme_classic() +
     ggplot2::xlab(expression(hat(mu))) +
     ggplot2::ylab(expression(hat(sigma)))
+}
+
+plot_gamma_precision <- function(data, design, id_col){
+  data %>%
+    prep_data_for_gamma_weight_regression(design, id_col) %>%
+    tidyr::drop_na() %>%
+    plot_mean_sd_trend() +
+    ggplot2::ggtitle("For precision weights")
+}
+
+plot_gamma_imputation <- function(data, design, id_col){
+  data %>%
+    prep_data_for_gamma_imputation_regression(design, id_col) %>%
+    tidyr::drop_na() %>%
+    plot_mean_sd_trend() +
+    ggplot2::facet_wrap(name ~ .) +
+    ggplot2::ggtitle("For imputation")
 }
