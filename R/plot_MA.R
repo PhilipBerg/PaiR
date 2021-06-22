@@ -23,7 +23,6 @@ utils::globalVariables(c("significant", "median_lfc"))
 #'
 #' # Normalize and log-transform the data
 #' yeast <- prnn(yeast, "identifier")
-#'
 #' \dontrun{
 #' results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 #' imputation_summary <- extract_results(yeast, results, .05, 1, "fdr", "identifier")
