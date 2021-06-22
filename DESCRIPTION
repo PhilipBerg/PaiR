@@ -9,7 +9,7 @@ Authors@R:
            comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: Analysis of lable free proteomics data in R.
     Includes data normalization, gamma regression to establish mean-variance 
-    trends that is to remove mean-variance trends in the data as well as 
+    trends that is used to remove mean-variance trends in the data as well as 
     adaptive inference of standard deviation for imputation.
     It uses limma for significance test, and generates multiple 
     imputations to reduce type-I error from the imputation.
@@ -19,6 +19,8 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
+    knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 biocViews:
@@ -43,3 +45,4 @@ URL: https://github.com/PhilipBerg/pair
 BugReports: https://github.com/PhilipBerg/pair/issues
 Depends: 
     R (>= 2.10)
+VignetteBuilder: knitr

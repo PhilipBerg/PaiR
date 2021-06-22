@@ -40,10 +40,10 @@ data frame with normalized values
 }
 \description{
 Method for trimmed m means normalization. It is based on the method described
-in \insertCite{robinson2010scaling;textual}{pair}. Though, instead of library size as was
-used in the original method, here we use the loading size which we define as
-the sum of all features. If no reference sample is specified, it uses the
-sample with the lowest coefficient of variation as default.
+in \insertCite{robinson2010scaling;textual}{pair}. Though, instead of library
+size as was used in the original method, here we use the loading size which
+we define as the sum of all features. If no reference sample is specified, it
+uses the sample with the lowest coefficient of variation as default.
 All estimates are based on features without missing values.
 }
 \examples{
