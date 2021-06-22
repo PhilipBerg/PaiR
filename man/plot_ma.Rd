@@ -16,5 +16,23 @@ a \code{ggplot2} of the distribution of the hits
 Generate a MA-plot of the analysis
 }
 \examples{
+# Generate a design matrix for the data
+design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
 
+# Set correct colnames, this is important for fit_gamma_*
+colnames(design) <- paste0("ng", c(50, 100))
+
+# Generate the contrast matrix
+contrast <- limma::makeContrasts(
+  contrasts = "ng100-ng50",
+  levels = design
+)
+
+# Normalize and log-transform the data
+yeast <- prnn(yeast, "identifier")
+\dontrun{
+results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
+imputation_summary <- extract_results(yeast, results, .05, 1, "fdr", "identifier")
+plot_ma(imputation_summary)
+}
 }

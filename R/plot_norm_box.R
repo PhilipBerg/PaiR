@@ -26,9 +26,9 @@ utils::globalVariables(c("where", "value", "name", "method", "med", "condition")
 #' @export
 #'
 #' @examples
-#' plot_norm_box(yeast, 'identifier')
+#' plot_norm_box(yeast, "identifier")
 #' # Plot only ng50 samples
-#' plot_norm_box(yeast, 'identifier', plot_target = contains('ng50'))
+#' plot_norm_box(yeast, "identifier", plot_target = contains("ng50"))
 plot_norm_box <- function(data,
                           id_col = "id",
                           trim_M = .3,

@@ -16,14 +16,14 @@ utils::globalVariables(c(".", "sd", "model"))
 #'
 #' @examples
 #' # Produce a design matrix
-#' design <- model.matrix(~0+factor(rep(1:2, each = 3)))
-#' colnames(design) <- paste0('ng', c(50, 100))
+#' design <- model.matrix(~ 0 + factor(rep(1:2, each = 3)))
+#' colnames(design) <- paste0("ng", c(50, 100))
 #'
 #' # Normalize and log transform the data
-#' yeast <- prnn(yeast, 'identifier')
+#' yeast <- prnn(yeast, "identifier")
 #'
 #' # Generate the plots
-#' plot_gamma_regression(yeast, design, 'identifier')
+#' plot_gamma_regression(yeast, design, "identifier")
 plot_gamma_regression <- function(data, design, id_col = "id") {
   precision_plot <- data %>%
     prep_data_for_gamma_weight_regression(design, id_col) %>%
@@ -49,7 +49,7 @@ plot_gamma_regression <- function(data, design, id_col = "id") {
 
 plot_mean_sd_trend <- function(data) {
   data %>%
-  ggplot2::ggplot(ggplot2::aes(mean, sd)) +
+    ggplot2::ggplot(ggplot2::aes(mean, sd)) +
     ggplot2::geom_point(size = 1 / 10) +
     ggplot2::geom_smooth(
       method = stats::glm,

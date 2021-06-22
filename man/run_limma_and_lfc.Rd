@@ -52,24 +52,24 @@ colnames(design) <- paste0("ng", c(50, 100))
 
 # Generate the contrast matrix
 contrast <- limma::makeContrasts(
-contrasts = 'ng100-ng50',
-levels = design
+  contrasts = "ng100-ng50",
+  levels = design
 )
 
 # Normalize and log-transform the data
 yeast <- prnn(yeast, "identifier")
 
 # Fit the gamma regressions
-gamma_reg_model <- fit_gamma_weights(yeast, design, 'identifier')
+gamma_reg_model <- fit_gamma_weights(yeast, design, "identifier")
 
 # Examplify on the non-missing data
 yeast <- tidyr::drop_na(yeast)
 
 results <- run_limma_and_lfc(
-yeast,
-design,
-contrast,
-gamma_reg_model,
-'identifier'
+  yeast,
+  design,
+  contrast,
+  gamma_reg_model,
+  "identifier"
 )
 }

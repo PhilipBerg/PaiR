@@ -28,5 +28,5 @@ data.frame
 Normalize data to a pseudo-reference
 }
 \examples{
-yeast_prnn <- prnn(yeast, 'identifier')
+yeast_prnn <- prnn(yeast, "identifier")
 }

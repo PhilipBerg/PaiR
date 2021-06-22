@@ -34,6 +34,6 @@ filter_outliers(yeast, lower_limit = stats::quantile(yeast[-1], .1, na.rm = TRUE
 # We recommend normalizing the data before filtering outliers.
 # This way we ensure that no peptides are considered outliers as an effect
 # of a set of samples, one average, have lower quantification
-yeast <- prnn(yeast, 'identifier')
+yeast <- prnn(yeast, "identifier")
 filter_outliers(yeast, -1, 1, 1.5)
 }

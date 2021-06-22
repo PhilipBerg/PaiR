@@ -26,7 +26,7 @@ utils::globalVariables(c("flag", "value", "ref", "where"))
 #' # We recommend normalizing the data before filtering outliers.
 #' # This way we ensure that no peptides are considered outliers as an effect
 #' # of a set of samples, one average, have lower quantification
-#' yeast <- prnn(yeast, 'identifier')
+#' yeast <- prnn(yeast, "identifier")
 #' filter_outliers(yeast, -1, 1, 1.5)
 filter_outliers <- function(data,
                             target = NULL,
@@ -44,8 +44,7 @@ filter_outliers <- function(data,
       dplyr::across(!!target),
       k = k,
       lower_limit = lower_limit
-    )
-    ) %>%
+    )) %>%
     dplyr::filter(flag < limit) %>%
     dplyr::select(-flag)
 }

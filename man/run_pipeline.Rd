@@ -56,14 +56,13 @@ colnames(design) <- paste0("ng", c(50, 100))
 
 # Generate the contrast matrix
 contrast <- limma::makeContrasts(
-contrasts = 'ng100-ng50',
-levels = design
+  contrasts = "ng100-ng50",
+  levels = design
 )
 
 # Normalize and log-transform the data
 yeast <- prnn(yeast, "identifier")
-
 \dontrun{
-results <- run_pipeline(yeast, design, contrast, 1000, 5, 'identifier', TRUE)
+results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 }
 }

@@ -17,7 +17,7 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #' @import utils
 #'
 #' @examples
-#' yeast_prnn <- prnn(yeast, 'identifier')
+#' yeast_prnn <- prnn(yeast, "identifier")
 prnn <- function(data,
                  id_col = "id",
                  log = TRUE,

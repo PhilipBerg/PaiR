@@ -35,25 +35,25 @@
 #'
 #' # Generate the contrast matrix
 #' contrast <- limma::makeContrasts(
-#' contrasts = 'ng100-ng50',
-#' levels = design
+#'   contrasts = "ng100-ng50",
+#'   levels = design
 #' )
 #'
 #' # Normalize and log-transform the data
 #' yeast <- prnn(yeast, "identifier")
 #'
 #' # Fit the gamma regressions
-#' gamma_reg_model <- fit_gamma_weights(yeast, design, 'identifier')
+#' gamma_reg_model <- fit_gamma_weights(yeast, design, "identifier")
 #'
 #' # Examplify on the non-missing data
 #' yeast <- tidyr::drop_na(yeast)
 #'
 #' results <- run_limma_and_lfc(
-#' yeast,
-#' design,
-#' contrast,
-#' gamma_reg_model,
-#' 'identifier'
+#'   yeast,
+#'   design,
+#'   contrast,
+#'   gamma_reg_model,
+#'   "identifier"
 #' )
 run_limma_and_lfc <- function(data,
                               design,
@@ -87,16 +87,16 @@ run_limma_and_lfc <- function(data,
     weights <- calc_weights(data, gamma_reg_model) %>%
       as.matrix()
   } else if (!is.null(weights) & (dim(weights) != dim(data))) {
-    msg <- 'Incorect dimensions between data and weights.'
+    msg <- "Incorect dimensions between data and weights."
     incorrect_dims <- which(dim(weights) != dim(data))
     for (i in seq_along(incorrect_dims)) {
-      msg[i+1] <- dplyr::case_when(
-        incorrect_dims[i] == 1 ~ glue::glue('Data has {dim(data)[incorrect_dims[i]]} rows while weights have {dim(weights)[incorrect_dims[i]]}'),
-        incorrect_dims[i] == 2 ~ glue::glue('Data has {dim(data)[incorrect_dims[i]]} columns while weights have {dim(weights)[incorrect_dims[i]]}')
+      msg[i + 1] <- dplyr::case_when(
+        incorrect_dims[i] == 1 ~ glue::glue("Data has {dim(data)[incorrect_dims[i]]} rows while weights have {dim(weights)[incorrect_dims[i]]}"),
+        incorrect_dims[i] == 2 ~ glue::glue("Data has {dim(data)[incorrect_dims[i]]} columns while weights have {dim(weights)[incorrect_dims[i]]}")
       )
     }
     rlang::abort(
-      stringr::str_flatten(msg, '\n')
+      stringr::str_flatten(msg, "\n")
     )
   }
   hits <- limma::lmFit(data, design, weights = weights) %>%
