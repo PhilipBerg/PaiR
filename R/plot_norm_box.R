@@ -47,7 +47,7 @@ plot_norm_box <- function(data,
       target = !!norm_target
     ) %>%
     dplyr::select(id_col, !!plot_target) %>%
-    dplyr::rename_with(~ paste0(., "_prnn"), where(is.numeric))
+    dplyr::rename_with(~ paste0(., "_psrn"), where(is.numeric))
   tmm <- data %>%
     tmm(
       trim_M = trim_M,

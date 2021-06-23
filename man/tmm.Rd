@@ -36,7 +36,10 @@ columns will be used in the normalization if not specified.}
 provided, the sample with the lowest coefficient of variation will be used}
 }
 \value{
-data frame with normalized values
+data frame with normalized values if \code{load_info=FALSE}, if it is \code{TRUE}
+then it returns a list with two tibbles. One tibble containing the
+normalized data and one containing the loading info as well as the
+estimated normalization factors.
 }
 \description{
 Method for trimmed m means normalization. It is based on the method described

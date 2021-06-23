@@ -19,7 +19,10 @@ utils::globalVariables(c("where", "value", "ref", "all_of"))
 #'     \code{\link[tidyselect]{tidyselect-package}} syntax. By default, all numerical
 #'     columns will be used in the normalization if not specified.
 #'
-#' @return data.frame
+#' @return data frame with normalized values if `load_info=FALSE`, if it is `TRUE`
+#'    then it returns a list with two tibbles. One tibble containing the
+#'    normalized data and one containing the loading info as well as the
+#'    estimated normalization factors.
 #' @export
 #' @importFrom dplyr .data
 #' @import utils
@@ -98,7 +101,10 @@ utils::globalVariables(c("load_size", "lfc", "A", "w"))
 #' @param reference_sample  Specify a reference sample to normalize to, if not
 #'     provided, the sample with the lowest coefficient of variation will be used
 #'
-#' @return data frame with normalized values
+#' @return data frame with normalized values if `load_info=FALSE`, if it is `TRUE`
+#'    then it returns a list with two tibbles. One tibble containing the
+#'    normalized data and one containing the loading info as well as the
+#'    estimated normalization factors.
 #' @export
 #' @import utils
 #'

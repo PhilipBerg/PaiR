@@ -25,7 +25,10 @@ after normalization}
 columns will be used in the normalization if not specified.}
 }
 \value{
-data.frame
+data frame with normalized values if \code{load_info=FALSE}, if it is \code{TRUE}
+then it returns a list with two tibbles. One tibble containing the
+normalized data and one containing the loading info as well as the
+estimated normalization factors.
 }
 \description{
 This function generates a pseudo-reference by taking the geometric mean of
