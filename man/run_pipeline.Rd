@@ -9,7 +9,7 @@ run_pipeline(
   design,
   contrast_matrix,
   imputations,
-  workers,
+  workers = 1,
   id_col = "id",
   plot_trend = FALSE
 )

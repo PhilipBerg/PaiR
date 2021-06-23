@@ -108,8 +108,91 @@ The two individual plots can be generated similarly by calling `plot_gamma_weigh
 If one wants to inspect the estimated models that can be done similarly with `fit_gamma_regressions`, `fit_gamma_imputation`, or `fit_gamma_weights`.
 
 ##Data imputation and significance calling
+###Multiple imputation
+To performe multiple imputation and then run limma on each imputation can efficiently be performed by `run_pipeline`.
+`run_pipeline` fits the needed gamma regressions and has a backend to `multidplyr` for parallel processing.
+This can drastically increase the speed when running 1000 or more imputations.
+Here is an example on the `yeast` data running 1000 imputations and using 5 parallel workers.
+First we need to generate a contrast matrix which provides what comparisons to perform.
+```{r, yeast_contras}
+yeast_contrast <- limma::makeContrasts(
+  contrasts = 'ng100-ng50',
+  levels = yeast_design
+)
+```
+This performs the test if the mean of the cysteines in the `ng100` conditions is different from the means in the `ng50` condition.
+Further, it also means that the LFC will be calculated as `ng100 - ng50`.
+We are now ready to run the imputation.
+```{r, yeast_pipeline}
+yeast_multi_imputation_results <- run_pipeline(
+  data = yeast_psrn,
+  design = yeast_design,
+  contrast_matrix = yeast_contrast,
+  imputations = 1000,
+  workers = 5,
+  id_col = 'identifier',
+  plot_trend = FALSE # we have already looked at the mean-variance plots
+                     # otherwise, putting this flag to TRUE would generate those plots
+)
+```
+`yeast_multi_imputation_results` will now be a tibble with each row containing one imputation and one decision from limma and LFC.
+```{r, yeast_results}
+yeast_multi_imputation_results
+```
+If one wants to access one particular imputation or decision that can be done with `$` and `[[` as follows.
+```{r, yeast_example}
+yeast_multi_imputation_results$imputed_data[[5]]
+yeast_multi_imputation_results$limma_results[[5]]
+```
+which shows the results of the fifth imputation.
+Next to perform p-value correction and binomial testing for the imputations we use `extract_results`.
+```{r, yeast_extract}
+yeast_reduced_results <- extract_results(
+  yeast_psrn,
+  yeast_multi_imputation_results,
+  alpha = 0.05,
+  abs_lfc = 1,
+  pcor = 'fdr',
+  null_hyp = 0.5
+)
+```
+
+###Single imputation
+To perform a single imputation one can use the `single_imputation` function.
+```{r, yeast_sing_imp}
+yeast_one_imputation <- single_imputation(yeast_psrn, yeast_design, 'identifier')
+```
+Next we would fit the gamma regression for the weights with `fit_gamma_weights`.
+```{r, yeast_gam}
+yeast_gam_reg <- fit_gamma_weights(yeast_psrn, yeast_design, 'identifier')
+```
+We could now run a single instance of `limma` and calculate the LFC with `run_limma_and_lfc`.
+```{r, yeast_limma}
+yeast_one_imputation_results <- run_limma_and_lfc(
+  yeast_one_imputation,
+  yeast_design, 
+  yeast_contrast, 
+  yeast_gam_reg, 
+  'identifier'
+)
+```
+We might want to perform some p-value correction on this data.
+This can be one with `R`'s function `p.adjust`.
+```{r, yeast_adjust}
+yeast_one_imputation_results$p_val_ng100_vs_ng50 <- p.adjust(
+  yeast_one_imputation_results$p_val_ng100_vs_ng50,
+  'fdr'
+)
+```
+##Plotting the results
+###Multiple imputation
+The final decision for the analysis can be plotted with `plot_ma`.
+`plot_ma` returns a `ggplot` object so it easily be ascetically adjusted using `ggplot` syntax.
+```{r, yeast_mult_ma}
+plot_ma(yeast_reduced_results)
+```
+
 ###Single imputation
 
-###Multiple imputation
 
 # References

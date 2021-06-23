@@ -54,7 +54,7 @@ run_pipeline <- function(data,
                          design,
                          contrast_matrix,
                          imputations,
-                         workers,
+                         workers = 1,
                          id_col = "id",
                          plot_trend = FALSE) {
   # Fit gamma models
@@ -129,7 +129,7 @@ run_pipeline <- function(data,
       limma_results = purrr::map(
         imputed_data,
         run_limma_and_lfc,
-        design, contrast_matrix, gamma_reg_weights, NULL, id_col
+        design, contrast_matrix, gamma_reg_weights, id_col, NULL
       ),
       # Bind non-missing data
       limma_results = purrr::map(
