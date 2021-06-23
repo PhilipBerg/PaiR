@@ -148,8 +148,9 @@ which shows the results of the fifth imputation.
 Next to perform p-value correction and binomial testing for the imputations we use `extract_results`.
 ```{r, yeast_extract}
 yeast_reduced_results <- extract_results(
-  yeast_psrn,
-  yeast_multi_imputation_results,
+  data = yeast_psrn,
+  results = yeast_multi_imputation_results,
+  id_col = 'identifier',
   alpha = 0.05,
   abs_lfc = 1,
   pcor = 'fdr',
@@ -192,7 +193,18 @@ The final decision for the analysis can be plotted with `plot_ma`.
 plot_ma(yeast_reduced_results)
 ```
 
-###Single imputation
 
+###Single imputation
+For the single imputation we need to include a few more inputs to `plot_ma`.
+```{r, yeast_one_ma}
+plot_ma(
+  hits = yeast_one_imputation_results,
+  data = yeast_one_imputation,
+  id_col = 'identifier',
+  alpha = .05,
+  abs_lfc = 1
+)
+```
+In general, when comparing the two plots we can see that a single imputation can be more unreliable then multiple imputation.
 
 # References

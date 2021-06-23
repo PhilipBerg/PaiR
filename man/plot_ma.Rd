@@ -4,10 +4,27 @@
 \alias{plot_ma}
 \title{Generate a MA-plot of the analysis.}
 \usage{
-plot_ma(hits)
+plot_ma(hits, data = NULL, id_col = NULL, alpha = NULL, abs_lfc = NULL)
 }
 \arguments{
 \item{hits}{a \code{tibble} produced by \code{\link[pair]{extract_results}}}
+
+\item{data}{the \code{data.frame} used in the analysis.
+This should always be \code{NULL} if \code{hits} was produced by
+\code{\link[pair]{extract_results}}.}
+
+\item{id_col}{a character for the name of the column containing the
+name of the features in data (e.g., peptides, proteins, etc.).
+This should always be \code{NULL} if \code{hits} was produced by
+\code{\link[pair]{extract_results}}.}
+
+\item{alpha}{The alpha cut-off for considering a p-value significant.
+This should always be \code{NULL} if \code{hits} was produced by
+\code{\link[pair]{extract_results}}.}
+
+\item{abs_lfc}{If a LFC threshold should also be used in the decision.
+This should always be \code{NULL} if \code{hits} was produced by
+\code{\link[pair]{extract_results}}.}
 }
 \value{
 a \code{ggplot2} of the distribution of the hits.
