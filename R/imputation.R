@@ -82,7 +82,7 @@ impute_row <- function(mean, sd, data) {
 }
 
 
-prep_data_for_imputation <- function(data, conditions, gamma_reg_imputation,) {
+prep_data_for_imputation <- function(data, conditions, gamma_reg_imputation) {
   LOQ <- data %>%
     estimate_loq()
   data %>%
