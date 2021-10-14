@@ -73,8 +73,8 @@ plot_ma <- function(hits, data = NULL, id_col = NULL, alpha = NULL, abs_lfc = NU
       ) %>%
       dplyr::mutate(
         significant = dplyr::case_when(
-          p_val < alpha & lfc < abs_lfc ~ "Down",
-          p_val < alpha & lfc > -abs_lfc ~ "Up",
+          p_val < alpha & lfc > abs_lfc ~ "Up",
+          p_val < alpha & lfc < -abs_lfc ~ "Down",
           T ~ "Not significant"
         ),
         significant = factor(significant,
@@ -92,5 +92,5 @@ plot_ma <- function(hits, data = NULL, id_col = NULL, alpha = NULL, abs_lfc = NU
     ggplot2::theme_bw() +
     ggplot2::facet_wrap(comparison ~ .) +
     ggplot2::xlab(expression(hat(mu))) +
-    ggplot2::ylab("|LFC|")
+    ggplot2::ylab("LFC")
 }

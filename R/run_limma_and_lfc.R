@@ -86,18 +86,20 @@ run_limma_and_lfc <- function(data,
   if (!is.null(gamma_reg_model)) {
     weights <- calc_weights(data, gamma_reg_model) %>%
       as.matrix()
-  } else if (!is.null(weights) & (dim(weights) != dim(data))) {
-    msg <- "Incorect dimensions between data and weights."
-    incorrect_dims <- which(dim(weights) != dim(data))
-    for (i in seq_along(incorrect_dims)) {
-      msg[i + 1] <- dplyr::case_when(
-        incorrect_dims[i] == 1 ~ glue::glue("Data has {dim(data)[incorrect_dims[i]]} rows while weights have {dim(weights)[incorrect_dims[i]]}"),
-        incorrect_dims[i] == 2 ~ glue::glue("Data has {dim(data)[incorrect_dims[i]]} columns while weights have {dim(weights)[incorrect_dims[i]]}")
+  } else if (!is.null(weights)) {
+    if((dim(weights) != dim(data))){
+      msg <- "Incorect dimensions between data and weights."
+      incorrect_dims <- which(dim(weights) != dim(data))
+      for (i in seq_along(incorrect_dims)) {
+        msg[i + 1] <- dplyr::case_when(
+          incorrect_dims[i] == 1 ~ glue::glue("Data has {dim(data)[incorrect_dims[i]]} rows while weights have {dim(weights)[incorrect_dims[i]]}"),
+          incorrect_dims[i] == 2 ~ glue::glue("Data has {dim(data)[incorrect_dims[i]]} columns while weights have {dim(weights)[incorrect_dims[i]]}")
+        )
+      }
+      rlang::abort(
+        stringr::str_flatten(msg, "\n")
       )
     }
-    rlang::abort(
-      stringr::str_flatten(msg, "\n")
-    )
   }
   hits <- limma::lmFit(data, design, weights = weights) %>%
     limma::contrasts.fit(contrast_matrix) %>%
