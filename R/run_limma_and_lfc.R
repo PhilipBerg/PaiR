@@ -68,20 +68,6 @@ run_limma_and_lfc <- function(data,
     dplyr::select(tidyr::matches(condi)) %>%
     as.data.frame()
   rownames(data) <- row_names
-  # Calc LFC
-  lfc <- data %>%
-    dplyr::select(tidyr::matches(condi)) %>%
-    split.default(stringr::str_remove(names(.), "_\\d+$")) %>%
-    purrr::map(rowMeans) %>%
-    purrr::imap(~ tibble::enframe(.x, value = .y)) %>%
-    purrr::reduce(dplyr::left_join, by = "name")
-  calc_lfc_for <- stringr::str_replace(
-    dimnames(contrast_matrix)$Contrast,
-    "-", "_vs_"
-  )
-  lfc <- purrr::map(calc_lfc_for, calc_lfc, lfc) %>%
-    purrr::map(dplyr::select, !!id_col := name, tidyr::contains("lfc")) %>%
-    purrr::reduce(dplyr::left_join, by = id_col)
   # Run LIMMA
   if (!is.null(gamma_reg_model)) {
     weights <- calc_weights(data, gamma_reg_model) %>%
@@ -105,22 +91,29 @@ run_limma_and_lfc <- function(data,
     limma::contrasts.fit(contrast_matrix) %>%
     limma::eBayes(robust = TRUE)
   # Extract p-value from comparisons
-  hits$p.value %>%
-    tibble::as_tibble(rownames = id_col) %>%
-    # Bind the data together
-    dplyr::left_join(lfc, by = id_col) %>%
-    dplyr::rename_with(
-      ~ stringr::str_replace(., "^", "p_val_") %>%
-        stringr::str_replace(., "-", "_vs_"),
-      tidyr::contains("-")
-    )
-}
-
-calc_lfc <- function(comparison, means) {
-  columns <- stringr::str_split(comparison, "_vs_")[[1]]
-  means %>%
+  # Extract p-value and LFC from comparisons
+  colnames(contrast_matrix) %>%
+   stats:: setNames(colnames(contrast_matrix)) %>%
+    purrr::map(
+      ~limma::topTable(hits, .x, number = Inf, adjust.method = 'none') %>%
+        tibble::rownames_to_column(id_col) %>%
+        tibble::as_tibble()
+    ) %>%
+    purrr::imap(
+      dplyr::mutate
+    ) %>%
+    purrr::map(
+      dplyr::rename, comparison = dplyr::last_col()
+    ) %>%
+    dplyr::bind_rows() %>%
+    dplyr::select(
+      all_of(id_col),
+      lfc = logFC,
+      mean = AveExpr,
+      p_val = P.Value,
+      comparison
+    ) %>%
     dplyr::mutate(
-      !!paste0("lfc_", comparison) := !!dplyr::sym(columns[1]) -
-        !!dplyr::sym(columns[2])
+      comparison = stringr::str_replace(comparison, '-', '_vs_')
     )
 }

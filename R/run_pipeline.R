@@ -103,7 +103,6 @@ run_pipeline <- function(data,
         "contrast_matrix",
         "gamma_reg_weights",
         "calc_weights",
-        "calc_lfc",
         "impute_nested",
         "non_miss_result",
         "id_col"

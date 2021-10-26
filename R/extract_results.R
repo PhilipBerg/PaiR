@@ -58,8 +58,8 @@ utils::globalVariables(
 #' results <- run_pipeline(yeast, design, contrast, 1000, 5, "identifier", TRUE)
 #' extract_results(yeast, results, .05, 1, "fdr", "identifier")
 #' }
-extract_results <- function(data,
-                            results,
+extract_results <- function(results,
+                            data,
                             alpha = 0.05,
                             abs_lfc = 1,
                             pcor = stats::p.adjust.methods,
@@ -74,28 +74,17 @@ extract_results <- function(data,
     tidyr::unnest(cols = limma_results)
   if (pcor != "none") {
     pvals_multi_imp <- pvals_multi_imp %>%
-      dplyr::group_by(imputation) %>%
+      dplyr::group_by(imputation, comparison) %>%
       dplyr::mutate(
-        dplyr::across(dplyr::contains("p_val"), stats::p.adjust, method = pcor)
+        p_val = stats::p.adjust(p_val, method = pcor)
       ) %>%
       dplyr::ungroup()
   }
   pvals_multi_imp <- pvals_multi_imp %>%
     dplyr::select(-imputation) %>%
     dplyr::mutate(
-      dplyr::across(
-        dplyr::contains("p_val"),
-        ~ . < alpha
-      ),
-      dplyr::across(
-        dplyr::contains("lfc_"),
-        ~ abs(.) > abs_lfc
-      )
-    ) %>%
-    tidyr::pivot_longer(
-      where(is.logical),
-      names_to = c(".value", "comparison"),
-      names_pattern = "^(p_val|lfc)_(.*)$"
+      p_val = p_val < alpha,
+      lfc = abs(lfc) > abs_lfc
     ) %>%
     dplyr::group_by(dplyr::across(where(is.character))) %>%
     dplyr::summarise(
@@ -107,33 +96,12 @@ extract_results <- function(data,
       )$p.value,
       .groups = "drop"
     )
-  imputation_summary <- results %>%
+  summary <- results %>%
     summarise_imputations(pcor, id_col)
-  comps <- imputation_summary$comparison %>%
-    unique()
-  all_cols <- comps %>%
-    stringr::str_replace("_vs_", "|") %>%
-    stringr::str_flatten("|")
-  non_miss_summary <- data %>%
-    tidyr::drop_na(dplyr::matches(all_cols)) %>%
-    calc_comp_means(comps, id_col) %>%
-    dplyr::rename(comparison = name, median_mean = value)
-  complete_summary <- dplyr::left_join(
-    imputation_summary,
-    non_miss_summary,
-    by = c(id_col, "comparison")
-  ) %>%
-    dplyr::mutate(
-      median_mean = dplyr::coalesce(median_mean.x, median_mean.y)
-    ) %>%
-    dplyr::select(-tidyr::matches("\\.(x|y)$"))
   pvals_multi_imp %>%
     dplyr::left_join(
-      complete_summary,
+      summary,
       by = c(id_col, "comparison")
-    ) %>%
-    dplyr::mutate(
-      comparison = stringr::str_replace_all(comparison, "_", " ")
     )
 }
 
@@ -143,60 +111,33 @@ summarise_imputations <- function(results,
   lfc <- results %>%
     dplyr::select(limma_results) %>%
     tidyr::unnest(limma_results) %>%
-    dplyr::select(1, tidyr::contains("lfc")) %>%
-    dplyr::group_by(.data[[id_col]]) %>%
-    dplyr::summarise(dplyr::across(where(is.numeric), stats::median)) %>%
-    tidyr::pivot_longer(where(is.numeric)) %>%
-    dplyr::mutate(
-      name = stringr::str_remove(name, "lfc_")
-    ) %>%
-    dplyr::rename(median_lfc = value, comparison = name)
+    dplyr::select(all_of(id_col), lfc, mean, p_val, comparison)
 
-  comps <- lfc$comparison %>%
-    unique()
 
-  mean_values <- results %>%
-    dplyr::select(imputed_data) %>%
-    tidyr::unnest(imputed_data) %>%
-    calc_comp_means(comps, id_col) %>%
-    dplyr::group_by(.data[[id_col]], name) %>%
-    dplyr::summarise(median_mean = stats::median(value), .groups = "drop") %>%
-    dplyr::rename(comparison = name)
-
-  p_val <- results %>%
+  summary <- results %>%
     dplyr::select(imputation, limma_results) %>%
-    tidyr::unnest(limma_results) %>%
-    dplyr::select(imputation, {{ id_col }}, dplyr::contains("p_val"))
+    tidyr::unnest(limma_results)
   if (pcor != "none") {
-    p_val <- p_val %>%
-      dplyr::group_by(imputation) %>%
+    summary <- summary %>%
+      dplyr::group_by(imputation, comparison) %>%
       dplyr::mutate(
-        dplyr::across(dplyr::contains("p_val"), stats::p.adjust, method = pcor)
+        p_val = stats::p.adjust(p_val, method = pcor)
       ) %>%
       dplyr::ungroup()
   }
-  p_val <- p_val %>%
-    dplyr::select(-imputation) %>%
-    dplyr::group_by(.data[[id_col]]) %>%
-    dplyr::summarise(dplyr::across(where(is.numeric), stats::median)) %>%
-    tidyr::pivot_longer(where(is.numeric)) %>%
-    dplyr::mutate(
-      name = stringr::str_remove(name, "p_val_")
-    ) %>%
-    dplyr::rename(median_p_value = value, comparison = name)
 
-  p_val %>%
-    dplyr::left_join(
-      mean_values,
-      by = c(id_col, "comparison")
-    ) %>%
-    dplyr::left_join(
-      lfc,
-      by = c(id_col, "comparison")
-    ) %>%
+  imputed <- results$imputed_data[[1]] %>%
+    magrittr::use_series(identifier)
+
+  summary %>%
+    dplyr::select(-imputation) %>%
+    dplyr::group_by(.data[[id_col]], , comparison) %>%
+    dplyr::summarise(dplyr::across(where(is.numeric), stats::median)) %>%
+    dplyr::rename_with(~ paste0('median_', .), where(is.numeric)) %>%
     dplyr::mutate(
-      imputed = !is.na(median_mean)
-    )
+      imputed = .data[[id_col]] %in% imputed
+    ) %>%
+    dplyr::ungroup()
 }
 
 calc_comp_means <- function(data, comps, id_col = "id") {

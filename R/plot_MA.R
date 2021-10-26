@@ -54,23 +54,9 @@ plot_ma <- function(hits, data = NULL, id_col = NULL, alpha = NULL, abs_lfc = NU
         significant = factor(significant,
                              levels = c("Not significant", "Up", "Down")
         )
-      ) %>%
-      dplyr::rename(value = median_mean)
-  }else {
-    tidy_results <- hits %>%
-      tidyr::pivot_longer(
-        where(is.numeric),
-        names_to = c(".value", "comparison"),
-        names_pattern = "^(p_val|lfc)_(.*)$"
       )
-    comps <- tidy_results$comparison %>%
-      unique()
-    means <- data %>%
-      calc_comp_means(comps, id_col)
-    hits <- tidy_results %>%
-      dplyr::left_join(
-        means, by = c(id_col, 'comparison' = 'name')
-      ) %>%
+  }else {
+    hits <- hits %>%
       dplyr::mutate(
         significant = dplyr::case_when(
           p_val < alpha & lfc > abs_lfc ~ "Up",
@@ -81,12 +67,12 @@ plot_ma <- function(hits, data = NULL, id_col = NULL, alpha = NULL, abs_lfc = NU
                              levels = c("Not significant", "Up", "Down")
         )
       ) %>%
-      dplyr::rename(median_lfc = lfc)
+      dplyr::rename(median_lfc = lfc, median_mean = mean)
   }
   hits %>%
     dplyr::arrange(significant) %>%
     ggplot2::ggplot(
-      ggplot2::aes(value, median_lfc, color = significant)
+      ggplot2::aes(median_mean, median_lfc, color = significant)
     ) +
     ggplot2::geom_point(size = 1 / 2) +
     ggplot2::theme_bw() +

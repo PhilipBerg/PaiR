@@ -5,8 +5,8 @@
 \title{Extract the results from running the multiple imputations}
 \usage{
 extract_results(
-  data,
   results,
+  data,
   alpha = 0.05,
   abs_lfc = 1,
   pcor = stats::p.adjust.methods,
@@ -15,10 +15,10 @@ extract_results(
 )
 }
 \arguments{
+\item{results}{The output from \code{\link[pair]{run_pipeline}}.}
+
 \item{data}{The data used to generate the results when calling
 \code{\link[pair]{run_pipeline}}.}
-
-\item{results}{The output from \code{\link[pair]{run_pipeline}}.}
 
 \item{alpha}{The alpha value to decide when a feature is significant.}
 

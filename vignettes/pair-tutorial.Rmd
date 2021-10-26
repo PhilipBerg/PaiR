@@ -132,10 +132,9 @@ yeast_multi_imputation_results <- run_pipeline(
   workers = 5,
   id_col = 'identifier',
   plot_trend = FALSE # we have already looked at the mean-variance plots
-                     # otherwise, putting this flag to TRUE would generate those plots
-)
+)                    # otherwise, putting this flag to TRUE would generate those plots
 ```
-`yeast_multi_imputation_results` will now be a `tibble` with each row containing one imputation and one decision from limma and LFC.
+`yeast_multi_imputation_results` will now be a `tibble` with each row containing one imputation and one decision from limma.
 ```{r, yeast_results}
 yeast_multi_imputation_results
 ```
@@ -179,18 +178,23 @@ yeast_one_imputation_results <- run_limma_and_lfc(
 ```
 One might want to perform some p-value correction on this data.
 This can be one with `R`'s function `p.adjust`.
+Further, since `run_limma_and_lfc` returns the data in tidy format and if there are several comparisons, `dplyr`'s `group_by` and `mutate` can performe one correction per conditions as follows:
 ```{r, yeast_adjust}
-yeast_one_imputation_results$p_val_ng100_vs_ng50 <- p.adjust(
-  yeast_one_imputation_results$p_val_ng100_vs_ng50,
-  'fdr'
-)
+yeast_one_imputation_results <- yeast_one_imputation_results %>% 
+  dplyr::group_by(comparison) %>% 
+  dplyr::mutate(
+    p_val = p.adjust(p_val, 'fdr')
+  )
 ```
 ## Plotting the results
 ### Multiple imputation
 The final decision for the analysis can be plotted with `plot_ma`.
 `plot_ma` returns a `ggplot` object so it can easily be ascetically adjusted using `ggplot` syntax.
 ```{r, yeast_mult_ma, fig.width=7, fig.height=7, fig.fullwidth=TRUE}
-plot_ma(yeast_reduced_results)
+plot_ma(yeast_reduced_results) + # Move legend to below the plot
+  ggplot2::theme(
+    legend.position = 'bottom'
+  )
 ```
 
 
@@ -202,8 +206,11 @@ plot_ma(
   data = yeast_one_imputation,
   id_col = 'identifier',
   alpha = .05,
-  abs_lfc = 1
-)
+  abs_lfc = 0.5
+) + # Set color-blind friendly colors
+  ggplot2::scale_color_manual(
+    values = c('grey45', 'darkblue', 'darkred')
+  )
 ```
 
 # References
