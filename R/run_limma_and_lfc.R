@@ -60,7 +60,8 @@ run_limma_and_lfc <- function(data,
                               contrast_matrix,
                               gamma_reg_model = NULL,
                               id_col = "id",
-                              weights = NULL) {
+                              weights = NULL,
+                              .robust = T) {
   row_names <- data[[id_col]]
   condi <- design %>%
     get_conditions()
@@ -89,7 +90,7 @@ run_limma_and_lfc <- function(data,
   }
   hits <- limma::lmFit(data, design, weights = weights) %>%
     limma::contrasts.fit(contrast_matrix) %>%
-    limma::eBayes(robust = TRUE)
+    limma::eBayes(robust = .robust)
   # Extract p-value from comparisons
   # Extract p-value and LFC from comparisons
   colnames(contrast_matrix) %>%

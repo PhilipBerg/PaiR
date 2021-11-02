@@ -56,6 +56,7 @@ run_pipeline <- function(data,
                          imputations,
                          workers = 1,
                          id_col = "id",
+                         .robust = TRUE,
                          plot_trend = FALSE) {
   # Fit gamma models
   gamma_reg_models <- fit_gamma_regressions(data, design, id_col = id_col)
@@ -77,7 +78,7 @@ run_pipeline <- function(data,
   ## Non-missing data
   non_miss_result <- data %>%
     tidyr::drop_na(where(is.numeric)) %>%
-    run_limma_and_lfc(design, contrast_matrix, gamma_reg_weights, id_col)
+    run_limma_and_lfc(design, contrast_matrix, gamma_reg_weights, id_col, .robust = .robust)
   if (workers != 1) {
     cluster <- multidplyr::new_cluster(workers)
     multidplyr::cluster_library(
@@ -128,7 +129,7 @@ run_pipeline <- function(data,
       limma_results = purrr::map(
         imputed_data,
         run_limma_and_lfc,
-        design, contrast_matrix, gamma_reg_weights, id_col, NULL
+        design, contrast_matrix, gamma_reg_weights, id_col, NULL, .robust = .robust
       ),
       # Bind non-missing data
       limma_results = purrr::map(
