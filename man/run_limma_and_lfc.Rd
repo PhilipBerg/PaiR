@@ -10,7 +10,8 @@ run_limma_and_lfc(
   contrast_matrix,
   gamma_reg_model = NULL,
   id_col = "id",
-  weights = NULL
+  weights = NULL,
+  .robust = T
 )
 }
 \arguments{

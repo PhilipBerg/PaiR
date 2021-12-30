@@ -11,6 +11,7 @@ run_pipeline(
   imputations,
   workers = 1,
   id_col = "id",
+  .robust = TRUE,
   plot_trend = FALSE
 )
 }
