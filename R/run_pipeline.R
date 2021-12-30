@@ -66,7 +66,7 @@ run_pipeline <- function(data,
   }
   # Generate imputation input
   col_order <- names(data)
-  char_cols <- missing_data %>%
+  char_cols <- data %>%
     purrr::keep(is.character)
   conditions <- design %>%
     get_conditions()
