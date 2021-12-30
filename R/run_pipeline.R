@@ -66,7 +66,9 @@ run_pipeline <- function(data,
   }
   # Generate imputation input
   col_order <- names(data)
-  char_cols <- data %>%
+  missing_data <- data %>%
+    dplyr::filter(dplyr::if_any(where(is.numeric), is.na))
+  char_cols <- missing_data %>%
     purrr::keep(is.character)
   conditions <- design %>%
     get_conditions()

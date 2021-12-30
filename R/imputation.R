@@ -31,15 +31,24 @@ single_imputation <- function(data,
                               id_col = "id") {
   conditions <- design %>%
     get_conditions()
+  data <- data %>%
+    tibble::rowid_to_column()
   gamma_reg <- data %>%
     fit_gamma_imputation(design, id_col)
-  char_cols <- data %>%
-    purrr::keep(is.character)
+  missing_data <- data %>%
+    dplyr::filter(dplyr::if_any(where(is.numeric), is.na))
+  complete_data <- data %>%
+    dplyr::filter(dplyr::if_all(where(is.numeric), purrr::negate(is.na)))
+  char_cols <- missing_data %>%
+    dplyr::select(where(is.character), rowid)
   order <- data %>%
     colnames()
   data %>%
     prep_data_for_imputation(conditions, gamma_reg) %>%
-    impute(char_cols, order)
+    impute(char_cols, order) %>%
+    dplyr::bind_rows(complete_data) %>%
+    dplyr::arrange(rowid) %>%
+    dplyr::select(-rowid)
 }
 
 
@@ -86,8 +95,8 @@ prep_data_for_imputation <- function(data, conditions, gamma_reg_imputation) {
   LOQ <- data %>%
     estimate_loq()
   data %>%
-    dplyr::filter(dplyr::if_any(where(is.numeric), is.na)) %>%
     purrr::keep(is.numeric) %>%
+    dplyr::filter(dplyr::if_any(everything(), is.na)) %>%
     split.default(stringr::str_extract(names(.), conditions)) %>%
     purrr::imap(impute_nest, gamma_reg_imputation, LOQ)
 }
