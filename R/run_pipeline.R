@@ -66,13 +66,11 @@ run_pipeline <- function(data,
   }
   # Generate imputation input
   col_order <- names(data)
-  missing_data <- data %>%
-    dplyr::filter(dplyr::if_any(where(is.numeric), is.na))
   char_cols <- missing_data %>%
     purrr::keep(is.character)
   conditions <- design %>%
     get_conditions()
-  impute_nested <- missing_data %>%
+  impute_nested <- data %>%
     prep_data_for_imputation(conditions, gamma_reg_models$imputation)
   # Generate results
   ## Non-missing data
