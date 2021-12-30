@@ -127,7 +127,7 @@ summarise_imputations <- function(results,
   }
 
   imputed <- results$imputed_data[[1]] %>%
-    magrittr::use_series(id_col)
+    dplyr::pull(id_col)
 
   summary %>%
     dplyr::select(-imputation) %>%
