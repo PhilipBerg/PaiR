@@ -19,6 +19,7 @@
 #'     name of the features in data (e.g., peptides, proteins, etc.).
 #'
 #' @param weights a matrix of precision weights.
+#' @param .robust Logical value if limma::eBayes should use robust estimator (TRUE) or not (FALSE)
 #'
 #' @return a `tibble` with the id_col, then one p_val_* and lfc_* for each
 #'     comparison (*) in the contrast matrix
@@ -88,6 +89,8 @@ run_limma_and_lfc <- function(data,
       )
     }
   }
+  data <- data %>%
+    as.matrix()
   hits <- limma::lmFit(data, design, weights = weights) %>%
     limma::contrasts.fit(contrast_matrix) %>%
     limma::eBayes(robust = .robust)
