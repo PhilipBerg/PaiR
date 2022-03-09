@@ -66,7 +66,7 @@ run_pipeline <- function(data,
   }
   # Generate imputation input
   LOQ <- data %>%
-    keep(is.numeric) %>%
+    purrr::keep(is.numeric) %>%
     unlist(T, F) %>%
     {quantile(., .25, na.rm = T) - 1.5*IQR(., na.rm = T)} %>%
     unname()

@@ -36,7 +36,7 @@ single_imputation <- function(data,
   gamma_reg <- data %>%
     fit_gamma_imputation(design, id_col)
   LOQ <- data %>%
-    keep(is.numeric) %>%
+    purrr::keep(is.numeric) %>%
     unlist(T, F) %>%
     {quantile(., .25, na.rm = T) - 1.5*IQR(., na.rm = T)} %>%
     unname()
