@@ -35,6 +35,11 @@ single_imputation <- function(data,
     tibble::rowid_to_column()
   gamma_reg <- data %>%
     fit_gamma_imputation(design, id_col)
+  LOQ <- data %>%
+    keep(is.numeric) %>%
+    unlist(T, F) %>%
+    {quantile(., .25, na.rm = T) - 1.5*IQR(., na.rm = T)} %>%
+    unname()
   missing_data <- data %>%
     dplyr::filter(dplyr::if_any(where(is.numeric), is.na))
   complete_data <- data %>%
@@ -44,7 +49,7 @@ single_imputation <- function(data,
   order <- data %>%
     colnames()
   data %>%
-    prep_data_for_imputation(conditions, gamma_reg) %>%
+    prep_data_for_imputation(conditions, gamma_reg, LOQ) %>%
     impute(char_cols, order) %>%
     dplyr::bind_rows(complete_data) %>%
     dplyr::arrange(rowid) %>%
@@ -91,9 +96,7 @@ impute_row <- function(mean, sd, data) {
 }
 
 
-prep_data_for_imputation <- function(data, conditions, gamma_reg_imputation) {
-  LOQ <- data %>%
-    estimate_loq()
+prep_data_for_imputation <- function(data, conditions, gamma_reg_imputation, LOQ) {
   data %>%
     purrr::keep(is.numeric) %>%
     dplyr::filter(dplyr::if_any(everything(), is.na)) %>%

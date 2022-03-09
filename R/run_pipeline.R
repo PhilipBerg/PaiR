@@ -65,6 +65,11 @@ run_pipeline <- function(data,
     plot_gamma_regression(data, design, id_col = id_col)
   }
   # Generate imputation input
+  LOQ <- data %>%
+    keep(is.numeric) %>%
+    unlist(T, F) %>%
+    {quantile(., .25, na.rm = T) - 1.5*IQR(., na.rm = T)} %>%
+    unname()
   col_order <- names(data)
   missing_data <- data %>%
     dplyr::filter(dplyr::if_any(where(is.numeric), is.na))
@@ -73,7 +78,7 @@ run_pipeline <- function(data,
   conditions <- design %>%
     get_conditions()
   impute_nested <- data %>%
-    prep_data_for_imputation(conditions, gamma_reg_models$imputation)
+    prep_data_for_imputation(conditions, gamma_reg_models$imputation, LOQ)
   # Generate results
   ## Non-missing data
   non_miss_result <- data %>%
